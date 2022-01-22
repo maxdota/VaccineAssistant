@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "294497058886",
+    "project_id": "vaccine-assistant-835ab",
+    "storage_bucket": "vaccine-assistant-835ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:294497058886:android:83f41cae7ff94779128a47",
+        "android_client_info": {
+          "package_name": "vn.noname.vaccineassistant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "294497058886-k03soq1hkd0k09q6v1bhsc38fuom0vk2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "vn.noname.vaccineassistant",
+            "certificate_hash": "e17d4dc896230f8c78c5c8b0622b9943653f2d90"
+          }
+        },
+        {
+          "client_id": "294497058886-31feaguirc9nu8u6u5dq0ptj2ho8i062.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiOjDridaOcDX_fVIp3HhKCi04b9vLsBI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "294497058886-31feaguirc9nu8u6u5dq0ptj2ho8i062.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
