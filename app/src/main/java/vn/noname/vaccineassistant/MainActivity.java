@@ -16,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.karumi.dexter.Dexter;
@@ -24,6 +25,9 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import vn.noname.vaccineassistant.base.BaseActivity;
 import vn.noname.vaccineassistant.databinding.ActivityMainBinding;
@@ -83,6 +87,25 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
         };
         // asking permission
         askLocationPermission();
+        ArrayList<PlaceModel> placeList = new ArrayList<>(
+                Arrays.asList(
+                        new PlaceModel("TRK1", 0, new LatLng(10.778265, 106.679647)),
+                        new PlaceModel("TRK2", 0, new LatLng(10.778219, 106.679120)),
+                        new PlaceModel("TRK3", 1, new LatLng(10.778856, 106.679100)),
+                        new PlaceModel("TRK4", 1, new LatLng(10.779204, 106.679725)),
+                        new PlaceModel("TRK5", 1, new LatLng(10.778780, 106.680430))
+
+                )
+        );
+        for(int i = 0; i < placeList.size();i++){
+            if(placeList.get(i).getRequire()==0){
+                mMap.addMarker(new MarkerOptions().position(placeList.get(i).getLatLong()).title(placeList.get(i).getName()));
+            }
+
+            if(placeList.get(i).getRequire()==1){
+                mMap.addMarker(new MarkerOptions().position(placeList.get(i).getLatLong()).title(placeList.get(i).getName()).icon(BitmapDescriptorFactory.defaultMarker((float) 78.0)));
+            }
+        }
 
     }
 
@@ -98,9 +121,8 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
                 Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 userLatLong = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
                 mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(userLatLong).title("Your Location"));
+                mMap.addMarker(new MarkerOptions().position(userLatLong).title("Your Location").icon(BitmapDescriptorFactory.defaultMarker((float) 197.0)));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 15f));
-
 
 
 
@@ -108,6 +130,9 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
 
             @Override
             public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                LatLng location = new LatLng(10.778545, 106.679506);
+                mMap.addMarker(new MarkerOptions().position(location).title("Marker in HCM city").icon(BitmapDescriptorFactory.defaultMarker((float) 197.0)));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f));
 
             }
 
