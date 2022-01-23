@@ -48,4 +48,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:20.0.3'
     implementation 'com.google.firebase:firebase-storage:20.0.0'
     implementation platform('com.google.firebase:firebase-bom:29.0.4')
+
+    //dexter
+    implementation 'com.karumi:dexter:6.2.3'
 }
