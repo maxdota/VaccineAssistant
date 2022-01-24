@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -29,8 +30,6 @@ android {
         viewBinding true
     }
 }
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 dependencies {
 
     implementation 'com.google.firebase:firebase-analytics'
@@ -49,6 +48,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:20.0.0'
     implementation platform('com.google.firebase:firebase-bom:29.0.4')
 
-    //dexter
-    implementation 'com.karumi:dexter:6.2.3'
+
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
 }
