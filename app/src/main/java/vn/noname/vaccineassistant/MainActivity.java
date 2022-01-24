@@ -27,6 +27,12 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 
 import java.util.ArrayList;
@@ -63,8 +69,12 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
-        fusedLocationProviderClient = new FusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(MainActivity.this,
+
+
+
+
+       fusedLocationProviderClient = new FusedLocationProviderClient(this);
+        /*if (ActivityCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
             getLocation();
         }else {
@@ -72,9 +82,32 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
             mMap.addMarker(new MarkerOptions().position(location).title("Marker in HCM city").icon(BitmapDescriptorFactory.defaultMarker((float) 197.0)));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f));
             
-        }
+        }*/
+        checkLocationPermission();
 
 
+    }
+
+    private void checkLocationPermission() {
+        Dexter.withContext(this).withPermission(Manifest.permission.ACCESS_FINE_LOCATION).withListener(new PermissionListener() {
+            @Override
+            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                getLocation();
+            }
+
+            @Override
+            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                LatLng location = new LatLng(10.778545, 106.679506);
+                mMap.addMarker(new MarkerOptions().position(location).title("Marker in HCM city").icon(BitmapDescriptorFactory.defaultMarker((float) 197.0)));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f));
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+                permissionToken.continuePermissionRequest();
+            }
+        }).check();
     }
 
     @SuppressLint("MissingPermission")
