@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/each_item"
     android:padding="10dp"
+    android:layout_margin="15dp"
     >
 
         <LinearLayout
@@ -14,6 +15,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
                 <TextView
+                    android:id="@+id/tname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Tên địa điểm"
@@ -27,12 +29,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
                 <ImageView
+                    android:id="@+id/iaddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingRight="5dp"
                     android:src="@drawable/ic_baseline_add_location_24"
                     android:layout_gravity="center"/>
                 <TextView
+                    android:id="@+id/taddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Địa chỉ"
@@ -47,6 +51,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
                 <ImageView
+                    android:id="@+id/itime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingRight="5dp"
@@ -54,12 +59,14 @@
                     android:layout_gravity="center"/>
 
                 <TextView
-                    android:layout_width="171dp"
+                    android:id="@+id/start"
+                    android:layout_width="142dp"
                     android:layout_height="wrap_content"
                     android:text="Mở cửa"
                     android:textSize="20dp" />
 
                 <TextView
+                    android:id="@+id/close"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Đóng cửa"
@@ -75,6 +82,7 @@
             android:padding="10dp">
 
                 <ImageView
+                    android:id="@+id/ivaccine"
                     android:paddingRight="5dp"
                     android:layout_width="24dp"
                     android:layout_height="match_parent"
@@ -82,6 +90,7 @@
                     android:src="@drawable/injection" />
 
                 <TextView
+                    android:id="@+id/tvaccine"
                     android:layout_width="359dp"
                     android:layout_height="wrap_content"
                     android:text="Loại vaccine"
@@ -98,6 +107,7 @@
             android:padding="10dp">
 
                 <ImageView
+                    android:id="@+id/iage"
                     android:paddingRight="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -105,6 +115,7 @@
                     android:src="@drawable/ic_baseline_perm_identity_24" />
 
                 <TextView
+                    android:id="@+id/tage"
                     android:layout_width="359dp"
                     android:layout_height="wrap_content"
                     android:text="Độ tuổi"
@@ -121,6 +132,7 @@
             android:padding="10dp">
 
                 <ImageView
+                    android:id="@+id/iregion"
                     android:paddingRight="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -128,6 +140,7 @@
                     android:src="@drawable/ic_baseline_language_24" />
 
                 <TextView
+                    android:id="@+id/tregion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Khu vực"
@@ -142,6 +155,7 @@
             android:layout_below="@+id/region"
             android:orientation="horizontal">
                 <ImageView
+                    android:id="@+id/ifee"
                     android:paddingRight="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -149,6 +163,7 @@
                     android:layout_gravity="center"/>
 
                 <TextView
+                    android:id="@+id/tfee"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Phí"
