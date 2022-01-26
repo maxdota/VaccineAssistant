@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/each_item"
-    android:padding="15dp"
+    android:padding="10dp"
     >
 
         <LinearLayout
-            android:padding="20dp"
+            android:padding="10dp"
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tên địa điểm"
+                    android:textSize="30dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:padding="10dp"
             android:id="@+id/address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -15,17 +29,18 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingRight="5dp"
                     android:src="@drawable/ic_baseline_add_location_24"
                     android:layout_gravity="center"/>
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Hello my name is"
+                    android:text="Địa chỉ"
                     android:textSize="20dp" />
         </LinearLayout>
 
         <LinearLayout
+            android:padding="10dp"
             android:id="@+id/time"
             android:layout_below="@+id/address"
             android:layout_width="match_parent"
@@ -34,67 +49,109 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingRight="5dp"
                     android:src="@drawable/ic_baseline_access_time_24"
                     android:layout_gravity="center"/>
 
                 <TextView
+                    android:layout_width="171dp"
+                    android:layout_height="wrap_content"
+                    android:text="Mở cửa"
+                    android:textSize="20dp" />
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Hello my name is"
+                    android:text="Đóng cửa"
                     android:textSize="20dp" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/vaccine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/time"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+                <ImageView
+                    android:paddingRight="5dp"
+                    android:layout_width="24dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:src="@drawable/injection" />
+
+                <TextView
+                    android:layout_width="359dp"
+                    android:layout_height="wrap_content"
+                    android:text="Loại vaccine"
+                    android:textSize="20dp"
+                    />
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/age"
-            android:layout_below="@+id/time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_below="@+id/vaccine"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
                 <ImageView
+                    android:paddingRight="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_perm_identity_24"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_baseline_perm_identity_24" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="359dp"
                     android:layout_height="wrap_content"
-                    android:text="Hello my name is"
-                    android:textSize="30dp" />
+                    android:text="Độ tuổi"
+                    android:textSize="20dp" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/region"
+            android:layout_width="wrap_content"
+            android:layout_height="54dp"
             android:layout_below="@+id/age"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="1dp"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
                 <ImageView
+                    android:paddingRight="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_language_24"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_baseline_language_24" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Hello my name is"
-                    android:textSize="30dp" />
+                    android:text="Khu vực"
+                    android:textSize="20dp" />
+
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/payment"
-            android:layout_below="@+id/region"
+            android:padding="10dp"
+            android:id="@+id/fee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/region"
             android:orientation="horizontal">
                 <ImageView
+                    android:paddingRight="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_access_time_24"
+                    android:src="@drawable/ic_baseline_monetization_on_24"
                     android:layout_gravity="center"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Hello my name is"
-                    android:textSize="30dp" />
+                    android:text="Phí"
+                    android:textSize="20dp" />
         </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
