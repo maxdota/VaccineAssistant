@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    android:orientation="vertical"
+    android:background="@drawable/each_item"
+    android:elevation="15dp">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Loại vaccine"
+        android:textSize="20dp"
+        android:drawableStart="@drawable/injection_gray"
+        android:layout_margin="10dp"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ngày tiêm gần nhất"
+        android:textSize="20dp"
+        android:drawableStart="@drawable/ic_baseline_calendar_month_24"
+        android:layout_margin="10dp"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Xác nhận"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/vertical_gradient_background"/>
+
+</LinearLayout>

@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <include
-        android:id="@+id/bottom_nav"
-        layout="@layout/view_bottom_nav"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottom_nav"
-        tools:context=".MainActivity" />
-</RelativeLayout>
+        android:layout_height="match_parent">
+        <include
+            android:id="@+id/bottom_nav"
+            layout="@layout/view_bottom_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="-2dp" />
+
+
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottom_nav"
+            tools:context=".MainActivity" />
+    </RelativeLayout>
+    <include
+        layout="@layout/bottom_description" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

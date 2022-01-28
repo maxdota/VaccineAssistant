@@ -12,8 +12,8 @@
         android:layout_alignParentBottom="true" />
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_above="@id/bottom_nav"
         android:layout_marginBottom="2dp"
         android:background="@drawable/vertical_gradient_background"
@@ -25,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_above="@+id/list_view"
             android:gravity="center_horizontal"
             android:text="Danh Sách Điểm Tiêm"
             android:textColor="@color/white"
@@ -33,7 +34,7 @@
         <ListView
             android:id="@+id/list_view"
             android:layout_width="wrap_content"
-            android:layout_height="589dp"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="3dp" />
 

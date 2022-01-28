@@ -62,4 +62,5 @@
             android:text="Bản Đồ"
             android:textColor="@color/bottom_inactive_text" />
     </LinearLayout>
+
 </RelativeLayout>
