@@ -10,18 +10,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ListAdapter extends ArrayAdapter<Place> {
+import vn.noname.vaccineassistant.model.VaccinePlace;
+
+public class ListAdapter extends ArrayAdapter<VaccinePlace> {
     Activity context;
     int resource;
-    List<Place> objects;
-    public ListAdapter(Activity context, int resourse, List<Place>objects){
+    private ArrayList<VaccinePlace> objects;
+    public ListAdapter(Activity context, int resourse, ArrayList<VaccinePlace>objects){
         super(context, resourse, objects);
         this.context = context;
         this.resource = resourse;
         this.objects = objects;
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = this.context.getLayoutInflater();
@@ -42,15 +46,25 @@ public class ListAdapter extends ArrayAdapter<Place> {
         ImageView btnFee = (ImageView) row.findViewById(R.id.ifee);
         TextView txtFee = (TextView) row.findViewById(R.id.tfee);
         /** Set data to row*/
-        final Place place = this.objects.get(position);
-        txtName.setText(place.getName());
-        txtAddress.setText(place.getAddress());
-        txtStart.setText(place.getStart());
-        txtClose.setText(place.getClose());
-        txtVaccine.setText(place.getVaccine());
-        txtAge.setText(place.getAge());
-        txtRegion.setText(place.getRegion());
-        txtFee.setText(place.getFee());
+        final VaccinePlace place = this.objects.get(position);
+        txtName.setText(place.name);
+        txtAddress.setText(place.address);
+        txtStart.setText("Mở cửa: " + place.openingTime);
+        txtClose.setText("Đóng cửa: " + place.closingTime);
+        txtVaccine.setText("Loại vaccine: " + place.vaccine);
+        int ageAbove = place.ageLimitAbove;
+        int ageBelow = place.ageLimitBelow;
+        if (ageBelow == 0 && ageAbove == 0) {
+            txtAge.setText("Độ tuổi: không giới hạn");
+        } else if (ageAbove == 0) {
+            txtAge.setText("Độ tuổi: <" + ageBelow);
+        } else if (ageBelow == 0) {
+            txtAge.setText("Độ tuổi: >" + ageAbove);
+        } else {
+            txtAge.setText("Độ tuổi: >" + ageAbove + " và <" + ageBelow);
+        }
+        txtRegion.setText(("unlimited".equals(place.region)) ? "Khu vực: Không giới hạn" : ("Khu vực: " + place.region));
+        txtFee.setText((place.fee == 0) ? "Phí: Miễn Phí" : ("Phí: " + place.fee + "đ"));
         return row;
     }
     /** Show mesage*/
