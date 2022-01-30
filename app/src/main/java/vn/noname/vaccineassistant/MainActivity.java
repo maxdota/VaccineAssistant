@@ -3,12 +3,15 @@ package vn.noname.vaccineassistant;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +19,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -33,14 +41,17 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import vn.noname.vaccineassistant.base.BaseActivity;
 import vn.noname.vaccineassistant.databinding.ActivityMainBinding;
+import vn.noname.vaccineassistant.listener.FirebaseListener;
+import vn.noname.vaccineassistant.model.VaccinePlace;
 
-public class MainActivity extends BaseActivity implements OnMapReadyCallback {
+public class MainActivity extends BaseActivity implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    private static final String TAG = "MainActivityFlow";
 
     private GoogleMap mMap;
     private ActivityMainBinding binding;
@@ -50,7 +61,20 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
     private BottomSheetBehavior bottomSheetBehavior;
     private TextView des_name;
 
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
 
+    private FirebaseListener<ArrayList<VaccinePlace>> firebaseListener = new FirebaseListener<ArrayList<VaccinePlace>>() {
+        @Override
+        public void onDataUpdated(ArrayList<VaccinePlace> data) {
+            loadMapData(data);
+        }
+
+        @Override
+        public void onError(String message, int errorCode) {
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+        }
+    };
 
     @Override
     public int currentScreen() {
@@ -98,17 +122,12 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
         Dexter.withContext(this).withPermission(Manifest.permission.ACCESS_FINE_LOCATION).withListener(new PermissionListener() {
             @Override
             public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-
-                    getLocation();
-
+                getLocation();
             }
 
             @Override
             public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                LatLng location = new LatLng(10.778545, 106.679506);
-                mMap.addMarker(new MarkerOptions().position(location).title("Marker in HCM city").visible(false)).setTag("hello");
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 20f));
-
+                useSampleLocation();
             }
 
             @Override
@@ -119,55 +138,110 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
         }).check();
     }
 
-
-
     @SuppressLint("MissingPermission")
     private void getLocation() {
         fusedLocationProviderClient.getLastLocation().addOnCompleteListener(task -> {
-
-
-                Location location = task.getResult();
-                if(location == null){
+            Location location = task.getResult();
+            if (location == null) {
+                if (isLocationEnabled(this)) {
+                    updateUserLocation();
+                } else {
                     alert();
-                }else{
-                mMap.setMyLocationEnabled(true);
-                userLatLong = new LatLng(location.getLatitude(), location.getLongitude());
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(userLatLong).title("Your location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 15f));}
-
+                }
+            } else {
+                setUserLocationAndMap(location);
+            }
         });
-
     }
+
+    @SuppressWarnings("deprecation")
+    public static Boolean isLocationEnabled(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // This is a new method provided in API 28
+            LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            return lm.isLocationEnabled();
+        } else {
+            // This was deprecated in API 28
+            int mode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE,
+                    Settings.Secure.LOCATION_MODE_OFF);
+            return (mode != Settings.Secure.LOCATION_MODE_OFF);
+        }
+    }
+
+    private void updateUserLocation() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(1000)        // 10 seconds, in milliseconds
+                .setFastestInterval(100); // 1 second, in milliseconds
+        mGoogleApiClient.connect();
+    }
+
+    @SuppressLint("MissingPermission")
+    private void setUserLocationAndMap(Location location) {
+        mMap.setMyLocationEnabled(true);
+        setUserLatLongAndMap(new LatLng(location.getLatitude(), location.getLongitude()));
+    }
+
+    private void useSampleLocation() {
+        setUserLatLongAndMap(new LatLng(10.778545, 106.679506));
+    }
+
+    private void setUserLatLongAndMap(LatLng latLong) {
+        userLatLong = latLong;
+//        mMap.addMarker(new MarkerOptions().position(userLatLong).title("Your location"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 18f));
+    }
+
     private void alert(){
         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Thông báo")
-                .setMessage("Cần bật định vị để xác định vị trí của bạn. Bật sau khi ấn đồng ý.")
-                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                        dialogInterface.dismiss();
-                    }
-                })
+                .setTitle("Không xác định được vị trí của bạn")
+                .setMessage("Vui lòng bật định vị và thử lại")
+                .setPositiveButton("Thử Lại", (dialogInterface, i) -> getLocation())
+                .setNegativeButton("Bỏ Qua", (dialog, which) -> useSampleLocation())
                 .create();
         alertDialog.show();
     }
 
+    private void loadMapData(ArrayList<VaccinePlace> vaccinePlaces) {
+        mMap.clear();
+        for(int i = 0; i < vaccinePlaces.size();i++){
+            VaccinePlace place = vaccinePlaces.get(i);
+            if(!place.isRequired()){
+                mMap.addMarker(
+                        new MarkerOptions()
+                                .position(place.getLatLong())
+                                .title(place.name)
+                                .icon(BitmapDescriptorFactory.defaultMarker((float) 245.0)));
+            }
 
+            if(place.isRequired()){
+                mMap.addMarker(
+                        new MarkerOptions()
+                                .position(place.getLatLong())
+                                .title(place.name)
+                                .icon(BitmapDescriptorFactory.defaultMarker((float) 78.0)));
+            }
+        }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        mMap.setOnMarkerClickListener(marker -> {
+            String name = marker.getTitle();
+            des_name.setText(name);
+            if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+            return false;
+        });
+        if (userLatLong != null) {
+            setUserLatLongAndMap(userLatLong);
+        }
+    }
+
+    private void setupMap() {
         ArrayList<PlaceModel> placeList = new ArrayList<>(
                 Arrays.asList(
                         new PlaceModel("TRK1", 0, new LatLng(10.778265, 106.679647)),
@@ -199,7 +273,96 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback {
                 return false;
             }
         });
-
     }
 
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        DataCenter.getInstance().addVaccinePlaceListener(firebaseListener);
+//        setupMap();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+        if (mMap != null) {
+            DataCenter.getInstance().addVaccinePlaceListener(firebaseListener);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        disconnectLocationService();
+        DataCenter.getInstance().removeVaccinePlaceListener(firebaseListener);
+    }
+
+    private void disconnectLocationService() {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    @SuppressLint("MissingPermission")
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.i(TAG, "Location services connected.");
+        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (location == null) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        } else {
+            setUserLocationAndMap(location);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "Location services suspended. Please reconnect.");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.i(TAG, "Location services onConnectionFailed");
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            } catch (IntentSender.SendIntentException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CONNECTION_FAILURE_RESOLUTION_REQUEST && resultCode == RESULT_OK) {
+            getLocation();
+        }
+    }
+
+    private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 101;
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        Log.i(TAG, "onLocationChanged: " + location.toString());
+        disconnectLocationService();
+        mGoogleApiClient = null;
+        setUserLocationAndMap(location);
+    }
 }

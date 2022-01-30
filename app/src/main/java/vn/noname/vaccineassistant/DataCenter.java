@@ -77,8 +77,10 @@ public class DataCenter {
 
     public void addVaccinePlaceListener(FirebaseListener<ArrayList<VaccinePlace>> listener) {
         synchronized (vaccinePlaceLock) {
-            vaccinePlacesListeners.add(listener);
-            listener.onDataUpdated(vaccinePlaces);
+            if (!vaccinePlacesListeners.contains(listener)) {
+                vaccinePlacesListeners.add(listener);
+                listener.onDataUpdated(vaccinePlaces);
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package vn.noname.vaccineassistant.model;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.PropertyName;
 
 public class VaccinePlace {
@@ -23,6 +25,14 @@ public class VaccinePlace {
     public String region;
     @PropertyName("vaccine")
     public String vaccine;
+    @PropertyName("latitude")
+    public double latitude;
+    @PropertyName("longitude")
+    public double longitude;
+
+    public boolean isRequired() {
+        return region != null && !region.equals("unlimited");
+    }
 
     @Override
     public String toString() {
@@ -38,5 +48,9 @@ public class VaccinePlace {
                 ", region='" + region + '\'' +
                 ", vaccine='" + vaccine + '\'' +
                 '}';
+    }
+
+    public LatLng getLatLong() {
+        return new LatLng(latitude, longitude);
     }
 }
