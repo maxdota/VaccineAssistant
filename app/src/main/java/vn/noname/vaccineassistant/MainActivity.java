@@ -193,7 +193,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
 
     private void setUserLatLongAndMap(LatLng latLong) {
         userLatLong = latLong;
-//        mMap.addMarker(new MarkerOptions().position(userLatLong).title("Your location"));
+        mMap.addMarker(new MarkerOptions().position(userLatLong).title("Your location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 18f));
     }
 
