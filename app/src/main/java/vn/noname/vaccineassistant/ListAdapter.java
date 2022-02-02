@@ -36,7 +36,7 @@ public class ListAdapter extends ArrayAdapter<VaccinePlace> {
         TextView txtAddress = (TextView) row.findViewById(R.id.taddress);
         ImageView btnTime = (ImageView) row.findViewById(R.id.itime);
         TextView txtStart = (TextView) row.findViewById(R.id.start);
-        TextView txtClose = (TextView) row.findViewById(R.id.close);
+//        TextView txtClose = (TextView) row.findViewById(R.id.close);
         ImageView btnVaccine = (ImageView) row.findViewById(R.id.ivaccine);
         TextView txtVaccine = (TextView) row.findViewById(R.id.tvaccine);
         ImageView btnAge = (ImageView) row.findViewById(R.id.iage);
@@ -49,22 +49,22 @@ public class ListAdapter extends ArrayAdapter<VaccinePlace> {
         final VaccinePlace place = this.objects.get(position);
         txtName.setText(place.name);
         txtAddress.setText(place.address);
-        txtStart.setText("Mở cửa: " + place.openingTime);
-        txtClose.setText("Đóng cửa: " + place.closingTime);
-        txtVaccine.setText("Loại vaccine: " + place.vaccine);
+        txtStart.setText(place.openingTime + "-" + place.closingTime);
+//        txtClose.setText(place.closingTime);
+        txtVaccine.setText(place.vaccine);
         int ageAbove = place.ageLimitAbove;
         int ageBelow = place.ageLimitBelow;
         if (ageBelow == 0 && ageAbove == 0) {
-            txtAge.setText("Độ tuổi: không giới hạn");
+            txtAge.setText("không giới hạn");
         } else if (ageAbove == 0) {
-            txtAge.setText("Độ tuổi: <" + ageBelow);
+            txtAge.setText("<" + ageBelow);
         } else if (ageBelow == 0) {
-            txtAge.setText("Độ tuổi: >" + ageAbove);
+            txtAge.setText(">" + ageAbove);
         } else {
-            txtAge.setText("Độ tuổi: >" + ageAbove + " và <" + ageBelow);
+            txtAge.setText(">" + ageAbove + "và <" + ageBelow);
         }
-        txtRegion.setText(("unlimited".equals(place.region)) ? "Khu vực: Không giới hạn" : ("Khu vực: " + place.region));
-        txtFee.setText((place.fee == 0) ? "Phí: Miễn Phí" : ("Phí: " + place.fee + "đ"));
+        txtRegion.setText(("unlimited".equals(place.region)) ? "Không giới hạn" : (place.region));
+        txtFee.setText((place.fee == 0) ? "Miễn Phí" : (place.fee + "đ"));
         return row;
     }
     /** Show mesage*/

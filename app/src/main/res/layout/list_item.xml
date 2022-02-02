@@ -60,33 +60,17 @@
 
                 <TextView
                     android:id="@+id/start"
-                    android:layout_width="142dp"
+                    android:layout_width="103dp"
                     android:layout_height="wrap_content"
                     android:text="Mở cửa"
                     android:textSize="20dp" />
 
-                <TextView
-                    android:id="@+id/close"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Đóng cửa"
-                    android:textSize="20dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/vaccine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/time"
-            android:orientation="horizontal"
-            android:padding="10dp">
-
                 <ImageView
                     android:id="@+id/ivaccine"
-                    android:paddingRight="5dp"
                     android:layout_width="24dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    android:paddingRight="5dp"
                     android:src="@drawable/injection" />
 
                 <TextView
@@ -94,9 +78,25 @@
                     android:layout_width="359dp"
                     android:layout_height="wrap_content"
                     android:text="Loại vaccine"
-                    android:textSize="20dp"
-                    />
+                    android:textSize="20dp" />
+
+                <!--                <TextView-->
+                <!--                    android:id="@+id/close"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:text="Đóng cửa"-->
+                <!--                    android:textSize="20dp" />-->
         </LinearLayout>
+
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/vaccine"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_below="@+id/time"-->
+        <!--            android:orientation="horizontal"-->
+        <!--            android:padding="10dp">-->
+
+        <!--        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/age"
@@ -116,37 +116,37 @@
 
                 <TextView
                     android:id="@+id/tage"
-                    android:layout_width="359dp"
+                    android:layout_width="102dp"
                     android:layout_height="wrap_content"
                     android:text="Độ tuổi"
                     android:textSize="20dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/region"
-            android:layout_width="wrap_content"
-            android:layout_height="54dp"
-            android:layout_below="@+id/age"
-            android:layout_marginTop="1dp"
-            android:orientation="horizontal"
-            android:padding="10dp">
 
                 <ImageView
-                    android:id="@+id/iregion"
-                    android:paddingRight="5dp"
+                    android:id="@+id/ifee"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_baseline_language_24" />
+                    android:paddingRight="5dp"
+                    android:src="@drawable/ic_baseline_monetization_on_24" />
 
                 <TextView
-                    android:id="@+id/tregion"
+                    android:id="@+id/tfee"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Khu vực"
+                    android:text="Phí"
                     android:textSize="20dp" />
-
         </LinearLayout>
+
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/region"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="54dp"-->
+        <!--            android:layout_below="@+id/age"-->
+        <!--            android:layout_marginTop="1dp"-->
+        <!--            android:orientation="horizontal"-->
+        <!--            android:padding="10dp">-->
+
+        <!--        </LinearLayout>-->
         <LinearLayout
             android:padding="10dp"
             android:id="@+id/fee"
@@ -154,19 +154,20 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/region"
             android:orientation="horizontal">
+
                 <ImageView
-                    android:id="@+id/ifee"
-                    android:paddingRight="5dp"
+                    android:id="@+id/iregion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_monetization_on_24"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:paddingRight="5dp"
+                    android:src="@drawable/ic_baseline_language_24" />
 
                 <TextView
-                    android:id="@+id/tfee"
+                    android:id="@+id/tregion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Phí"
+                    android:text="Khu vực"
                     android:textSize="20dp" />
         </LinearLayout>
 </LinearLayout>
