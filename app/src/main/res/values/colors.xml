@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <color name="background_gradiant_top">#54C9D9</color>
     <color name="background_gradiant_bottom">#3787B5</color>
     <color name="bottom_inactive_text">#525253</color>
