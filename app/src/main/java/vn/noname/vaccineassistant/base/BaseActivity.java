@@ -36,20 +36,18 @@ public abstract class BaseActivity extends FragmentActivity {
         plusIcon = findViewById(R.id.plus_icon);
         listIcon = findViewById(R.id.list_icon);
         mapIcon = findViewById(R.id.map_icon);
-        listText = findViewById(R.id.list_text);
-        mapText = findViewById(R.id.map_text);
 
         switch (currentScreen()) {
             case MAP_SCREEN:
                 mapIcon.setImageResource(R.drawable.ic_map_active);
-                mapText.setTextColor(ContextCompat.getColor(this, R.color.bottom_active_text));
+//                mapText.setTextColor(ContextCompat.getColor(this, R.color.bottom_active_text));
                 break;
             case PLUS_SCREEN:
-                plusIcon.setImageResource(R.drawable.ic_plus_active);
+                plusIcon.setImageResource(R.drawable.plus_active);
                 break;
             case LIST_SCREEN:
                 listIcon.setImageResource(R.drawable.ic_list_active);
-                listText.setTextColor(ContextCompat.getColor(this, R.color.bottom_active_text));
+//                listText.setTextColor(ContextCompat.getColor(this, R.color.bottom_active_text));
                 break;
         }
 
