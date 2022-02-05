@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -50,12 +51,13 @@ import vn.noname.vaccineassistant.listener.FirebaseListener;
 import vn.noname.vaccineassistant.model.VaccinePlace;
 
 public class MainActivity extends BaseActivity implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener ,
+        GoogleMap.OnInfoWindowClickListener{
     private static final String TAG = "MainActivityFlow";
 
     private GoogleMap mMap;
     private ActivityMainBinding binding;
-    LatLng userLatLong;
+    public  static LatLng userLatLong ;
     FusedLocationProviderClient fusedLocationProviderClient;
     private LinearLayout layoutBottomDescription;
     private BottomSheetBehavior bottomSheetBehavior;
@@ -64,10 +66,14 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
+    public static ArrayList<VaccinePlace> VaccinePlaces = new ArrayList<>();
+
     private FirebaseListener<ArrayList<VaccinePlace>> firebaseListener = new FirebaseListener<ArrayList<VaccinePlace>>() {
         @Override
         public void onDataUpdated(ArrayList<VaccinePlace> data) {
+
             loadMapData(data);
+
         }
 
         @Override
@@ -114,6 +120,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
 
         }*/
         checkLocationPermission();
+
 
 
     }
@@ -193,7 +200,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
 
     private void setUserLatLongAndMap(LatLng latLong) {
         userLatLong = latLong;
-        mMap.addMarker(new MarkerOptions().position(userLatLong).title("Your location"));
+        mMap.addMarker(new MarkerOptions().position(userLatLong).title("Your location").draggable(true)).setTag(0);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 18f));
     }
 
@@ -210,6 +217,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
     private void loadMapData(ArrayList<VaccinePlace> vaccinePlaces) {
         mMap.clear();
         for(int i = 0; i < vaccinePlaces.size();i++){
+            VaccinePlaces.add(vaccinePlaces.get(i));
             VaccinePlace place = vaccinePlaces.get(i);
             if(!place.isRequired()){
                 mMap.addMarker(
@@ -233,6 +241,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
             des_name.setText(name);
             if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
             }
             return false;
         });
@@ -269,7 +278,9 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
                 des_name.setText(name);
                 if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
                 }
+
                 return false;
             }
         });
@@ -288,6 +299,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         DataCenter.getInstance().addVaccinePlaceListener(firebaseListener);
+        mMap.setOnInfoWindowClickListener(this);
 //        setupMap();
     }
 
@@ -364,5 +376,13 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
         disconnectLocationService();
         mGoogleApiClient = null;
         setUserLocationAndMap(location);
+    }
+
+    @Override
+    public void onInfoWindowClick(@NonNull Marker marker) {
+        if(marker.getTitle().equals("Your location")){}
+        Intent i = new Intent(MainActivity.this, PlusLocationActivity.class);
+        startActivity(i);
+
     }
 }

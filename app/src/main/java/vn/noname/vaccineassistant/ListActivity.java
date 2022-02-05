@@ -1,6 +1,9 @@
 package vn.noname.vaccineassistant;
 
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,14 +22,62 @@ public class ListActivity extends BaseActivity {
     }
     ListView listView;
     ArrayList<Place> placeList;
-    private ArrayList<VaccinePlace> vaccinePlaces = new ArrayList<>();
+    private ArrayList<VaccinePlace> placeDst = new ArrayList<>();
+    private  ArrayList<VaccinePlace> vaccinePlaces = new ArrayList<>();
     ListAdapter listAdapter;
+    private ArrayList<Float> distance=new ArrayList<>();
 
     private FirebaseListener<ArrayList<VaccinePlace>> firebaseListener = new FirebaseListener<ArrayList<VaccinePlace>>() {
         @Override
         public void onDataUpdated(ArrayList<VaccinePlace> data) {
+
             listAdapter.clear();
-            listAdapter.addAll(data);
+            if( getIntent().getStringExtra("Vaccine") != null ){
+
+
+
+               for(int i = 0; i < data.size();i++){
+                    VaccinePlace place = data.get(i);
+                    if(place.vaccine.equals( getIntent().getStringExtra("Vaccine"))){
+                        if(MainActivity.userLatLong != null){
+                            float[] result = new float[1];
+                            Location.distanceBetween(MainActivity.userLatLong.latitude, MainActivity.userLatLong.longitude, place.latitude, place.longitude, result);
+                            distance.add(result[0]);
+                            placeDst.add(data.get(i));
+                        }else {
+
+                            float[] result = new float[1];
+                            Location.distanceBetween(10.778545, 106.679506, place.latitude, place.longitude, result);
+                            distance.add(result[0]);
+
+                            placeDst.add(data.get(i));
+                        }
+                    }
+                }
+                placeDst = placeDistance( distance);
+                listAdapter.addAll(placeDst);
+            }
+            else {
+                for(int i = 0; i < data.size();i++){
+                    VaccinePlace place = data.get(i);
+                    if(MainActivity.userLatLong != null){
+                            float[] result = new float[1];
+                            Location.distanceBetween(MainActivity.userLatLong.latitude, MainActivity.userLatLong.longitude, place.latitude, place.longitude, result);
+                            distance.add(result[0]);
+                            placeDst.add(data.get(i));
+                    }else {
+
+                            float[] result = new float[1];
+                            Location.distanceBetween(10.778545, 106.679506, place.latitude, place.longitude, result);
+                            distance.add(result[0]);
+
+                            placeDst.add(data.get(i));
+                        }
+
+                }
+                placeDst = placeDistance( distance);
+                listAdapter.addAll(placeDst);
+            }
         }
 
         @Override
@@ -93,6 +144,24 @@ public class ListActivity extends BaseActivity {
                 "Độ tuổi: >13", "Khu vực: Không giới hạn", "Phí: Miễn Phí");
         placeList.add(place);
         listAdapter.notifyDataSetChanged();
+    }
+
+    private ArrayList<VaccinePlace> placeDistance( ArrayList<Float> distance){
+        VaccinePlace trk;
+        Float trk1;
+        for (int i=0; i<distance.size(); i++){
+            for (int j=i+1; j<distance.size(); j++){
+                if(distance.get(i) > distance.get(j)){
+                    trk1 = distance.get(i);
+                    distance.set(i, distance.get(j));
+                    distance.set(j,trk1);
+                    trk= placeDst.get(i);
+                    placeDst.set(i, placeDst.get(j));
+                    placeDst.set(j, trk);
+                }
+            }
+        }
+        return placeDst;
     }
 
 }
