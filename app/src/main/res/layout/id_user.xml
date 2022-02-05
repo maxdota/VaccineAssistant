@@ -15,6 +15,7 @@
         android:textAppearance="?attr/textAppearanceSubtitle1"
         android:hint="Loại vaccine"
         app:startIconDrawable="@drawable/injection_gray"
+        android:id="@+id/list_vaccine"
 
         >
         <AutoCompleteTextView
@@ -31,7 +32,7 @@
         android:layout_height="40dp"
         android:layout_margin="10dp"
         android:textAppearance="?attr/textAppearanceSubtitle1"
-        android:hint="Loại vaccine"
+        android:hint="Ngày tiêm gần nhất"
 
         app:startIconDrawable="@drawable/ic_baseline_calendar_month_24"
 
