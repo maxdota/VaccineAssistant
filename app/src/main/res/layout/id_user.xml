@@ -15,7 +15,6 @@
         android:textAppearance="?attr/textAppearanceSubtitle1"
         android:hint="Loại vaccine"
         app:startIconDrawable="@drawable/injection_gray"
-        android:id="@+id/list_vaccine"
 
         >
         <AutoCompleteTextView
