@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,7 +60,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
     private ActivityMainBinding binding;
     public  static LatLng userLatLong ;
     FusedLocationProviderClient fusedLocationProviderClient;
-    private LinearLayout layoutBottomDescription;
+    private RelativeLayout layoutBottomDescription;
     private BottomSheetBehavior bottomSheetBehavior;
     private TextView des_name;
 
@@ -120,10 +121,36 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
 
         }*/
         checkLocationPermission();
-
+        if(getIntent().getStringExtra("placeaddress") != null){
+            addNewMarker(getIntent());
+        }
 
 
     }
+
+    private void addNewMarker(Intent data) {
+        Log.d("Thử lần 1", data.getStringExtra("placeaddress"));
+        if(data.getStringExtra("placeaddress") != null){
+            Log.d("Thử lần 1", data.getStringExtra("placeaddress"));
+            LatLng location = new LatLng(data.getDoubleExtra("placelong",0), data.getDoubleExtra("placelat",0));
+            String address = data.getStringExtra("placeaddress");
+            String name = data.getStringExtra("placename");
+            String id = data.getStringExtra("placeid");
+            if(id.equals("Cứu trợ")){
+                mMap.addMarker(new MarkerOptions().position(location).title(name));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18f));
+            }
+            if (id.equals("Cung cấp quần áo")){
+                mMap.addMarker(new MarkerOptions().position(location).title(name));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18f));
+            }
+            if (id.equals("Cung cấp đồ ăn")){
+                mMap.addMarker(new MarkerOptions().position(location).title(name));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18f));
+            }
+        }
+    }
+
 
     private void checkLocationPermission() {
         Dexter.withContext(this).withPermission(Manifest.permission.ACCESS_FINE_LOCATION).withListener(new PermissionListener() {
@@ -200,7 +227,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
 
     private void setUserLatLongAndMap(LatLng latLong) {
         userLatLong = latLong;
-        mMap.addMarker(new MarkerOptions().position(userLatLong).title("Your location").draggable(true)).setTag(0);
+        mMap.addMarker(new MarkerOptions().position(userLatLong).title("Tạo địa điểm mới").draggable(true)).setTag(0);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 18f));
     }
 
@@ -299,6 +326,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         DataCenter.getInstance().addVaccinePlaceListener(firebaseListener);
+
         mMap.setOnInfoWindowClickListener(this);
 //        setupMap();
     }
@@ -366,6 +394,9 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
         if (requestCode == CONNECTION_FAILURE_RESOLUTION_REQUEST && resultCode == RESULT_OK) {
             getLocation();
         }
+        if(requestCode == 100 && resultCode == RESULT_OK){
+            addNewMarker(data);
+        }
     }
 
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 101;
@@ -380,9 +411,14 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
 
     @Override
     public void onInfoWindowClick(@NonNull Marker marker) {
-        if(marker.getTitle().equals("Your location")){}
+        if(marker.getTitle().equals("Tạo địa điểm mới")){}
         Intent i = new Intent(MainActivity.this, PlusLocationActivity.class);
-        startActivity(i);
+        i.putExtra("Lat", marker.getPosition().latitude);
+        i.putExtra("Long",marker.getPosition().longitude);
+        startActivityForResult(i, 100);
+
 
     }
+
+
 }

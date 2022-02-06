@@ -37,6 +37,9 @@
         <activity
             android:name=".ListActivity"
             android:screenOrientation="userPortrait" />
+        <activity
+            android:name=".PlusLocationActivity"
+            android:screenOrientation="userPortrait" />
     </application>
 
 </manifest>
