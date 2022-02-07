@@ -1,5 +1,7 @@
 package vn.noname.vaccineassistant;
 
+import static vn.noname.vaccineassistant.R.drawable.vaccine_green;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -31,6 +33,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -137,15 +140,15 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
             String name = data.getStringExtra("placename");
             String id = data.getStringExtra("placeid");
             if(id.equals("Cứu trợ")){
-                mMap.addMarker(new MarkerOptions().position(location).title(name));
+                mMap.addMarker(new MarkerOptions().position(location).title(name).icon(BitmapDescriptorFactory.fromAsset("vaccine_red.png")));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18f));
             }
             if (id.equals("Cung cấp quần áo")){
-                mMap.addMarker(new MarkerOptions().position(location).title(name));
+                mMap.addMarker(new MarkerOptions().position(location).title(name).icon(BitmapDescriptorFactory.fromAsset("clothes.png")));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18f));
             }
             if (id.equals("Cung cấp đồ ăn")){
-                mMap.addMarker(new MarkerOptions().position(location).title(name));
+                mMap.addMarker(new MarkerOptions().position(location).title(name).icon(BitmapDescriptorFactory.fromAsset("food.png")));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18f));
             }
         }
@@ -247,11 +250,11 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
             VaccinePlaces.add(vaccinePlaces.get(i));
             VaccinePlace place = vaccinePlaces.get(i);
             if(!place.isRequired()){
-                mMap.addMarker(
+                Marker marker = mMap.addMarker(
                         new MarkerOptions()
                                 .position(place.getLatLong())
                                 .title(place.name)
-                                .icon(BitmapDescriptorFactory.defaultMarker((float) 245.0)));
+                                .icon(BitmapDescriptorFactory.fromAsset("vaccine_green.png")));
             }
 
             if(place.isRequired()){
@@ -259,7 +262,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
                         new MarkerOptions()
                                 .position(place.getLatLong())
                                 .title(place.name)
-                                .icon(BitmapDescriptorFactory.defaultMarker((float) 78.0)));
+                                .icon(BitmapDescriptorFactory.fromAsset("vaccine_red.png")));
             }
         }
 
@@ -290,11 +293,11 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
         );
         for(int i = 0; i < placeList.size();i++){
             if(placeList.get(i).getRequire()==0){
-                mMap.addMarker(new MarkerOptions().position(placeList.get(i).getLatLong()).title(placeList.get(i).getName()).icon(BitmapDescriptorFactory.defaultMarker((float) 245.0)));
+                mMap.addMarker(new MarkerOptions().position(placeList.get(i).getLatLong()).title(placeList.get(i).getName()).icon(BitmapDescriptorFactory.fromAsset("vaccine_red.png")));
             }
 
             if(placeList.get(i).getRequire()==1){
-                mMap.addMarker(new MarkerOptions().position(placeList.get(i).getLatLong()).title(placeList.get(i).getName()).icon(BitmapDescriptorFactory.defaultMarker((float) 78.0)));
+                mMap.addMarker(new MarkerOptions().position(placeList.get(i).getLatLong()).title(placeList.get(i).getName()).icon(BitmapDescriptorFactory.fromAsset("vaccine_red.png")));
             }
         }
 
