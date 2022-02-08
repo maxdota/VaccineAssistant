@@ -1,22 +1,32 @@
 package vn.noname.vaccineassistant.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.PropertyName;
 
-public class VaccinePlace {
+public class VaccinePlace implements Parcelable {
+    public static final String PLACE_TYPE_CLOTHES_SUPPORT = "clothes_support";
+    public static final String PLACE_TYPE_FOOD_SUPPORT = "food_support";
+
     @PropertyName("id")
     public String id;
     @PropertyName("name")
     public String name;
     @PropertyName("address")
     public String address;
+    @PropertyName("place_type")
+    public String placeType;
     @PropertyName("age_limit_above")
     public int ageLimitAbove;
     @PropertyName("age_limit_below")
     public int ageLimitBelow;
     @PropertyName("fee")
     public long fee;
+    @PropertyName("day")
+    public String day;
     @PropertyName("opening_time")
     public String openingTime;
     @PropertyName("closing_time")
@@ -30,6 +40,61 @@ public class VaccinePlace {
     @PropertyName("longitude")
     public double longitude;
 
+    public VaccinePlace() {
+    }
+
+    protected VaccinePlace(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        address = in.readString();
+        placeType = in.readString();
+        ageLimitAbove = in.readInt();
+        ageLimitBelow = in.readInt();
+        fee = in.readLong();
+        day = in.readString();
+        openingTime = in.readString();
+        closingTime = in.readString();
+        region = in.readString();
+        vaccine = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(address);
+        dest.writeString(placeType);
+        dest.writeInt(ageLimitAbove);
+        dest.writeInt(ageLimitBelow);
+        dest.writeLong(fee);
+        dest.writeString(day);
+        dest.writeString(openingTime);
+        dest.writeString(closingTime);
+        dest.writeString(region);
+        dest.writeString(vaccine);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<VaccinePlace> CREATOR = new Creator<VaccinePlace>() {
+        @Override
+        public VaccinePlace createFromParcel(Parcel in) {
+            return new VaccinePlace(in);
+        }
+
+        @Override
+        public VaccinePlace[] newArray(int size) {
+            return new VaccinePlace[size];
+        }
+    };
+
     public boolean isRequired() {
         return region != null && !region.equals("unlimited");
     }
@@ -40,13 +105,17 @@ public class VaccinePlace {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
+                ", placeType='" + placeType + '\'' +
                 ", ageLimitAbove=" + ageLimitAbove +
                 ", ageLimitBelow=" + ageLimitBelow +
                 ", fee=" + fee +
+                ", day='" + day + '\'' +
                 ", openingTime='" + openingTime + '\'' +
                 ", closingTime='" + closingTime + '\'' +
                 ", region='" + region + '\'' +
                 ", vaccine='" + vaccine + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
                 '}';
     }
 

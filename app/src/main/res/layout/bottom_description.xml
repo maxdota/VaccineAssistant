@@ -24,7 +24,7 @@
             android:id="@+id/des_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
+            android:textSize="25dp"
             android:text="Bệnh viện Bạch Mai"
             android:textStyle="bold"
             android:textColor="@color/black"

@@ -1,6 +1,7 @@
 package vn.noname.vaccineassistant;
 
-import static vn.noname.vaccineassistant.R.drawable.vaccine_green;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_CLOTHES_SUPPORT;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_FOOD_SUPPORT;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -12,10 +13,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,9 +32,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -58,6 +57,10 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener ,
         GoogleMap.OnInfoWindowClickListener{
     private static final String TAG = "MainActivityFlow";
+    private static final String ADD_PLACE_TAG = "AddPlace";
+
+    private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 101;
+    private static final int ADD_PLACE_REQUEST = 102;
 
     private GoogleMap mMap;
     private ActivityMainBinding binding;
@@ -66,6 +69,8 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
     private RelativeLayout layoutBottomDescription;
     private BottomSheetBehavior bottomSheetBehavior;
     private TextView des_name;
+
+    private LatLng addPlaceLatLong;
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -124,9 +129,9 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
 
         }*/
         checkLocationPermission();
-        if(getIntent().getStringExtra("placeaddress") != null){
-            addNewMarker(getIntent());
-        }
+//        if(getIntent().getStringExtra("placeaddress") != null){
+//            addNewMarker(getIntent());
+//        }
 
 
     }
@@ -230,8 +235,13 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
 
     private void setUserLatLongAndMap(LatLng latLong) {
         userLatLong = latLong;
-        mMap.addMarker(new MarkerOptions().position(userLatLong).title("Tạo địa điểm mới").draggable(true)).setTag(0);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 18f));
+        mMap.addMarker(
+                new MarkerOptions().
+                        position(userLatLong)
+                        .title("Tạo địa điểm mới")
+                        .draggable(true)
+        ).setTag(ADD_PLACE_TAG);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLong, 13.5f));
     }
 
     private void alert(){
@@ -240,6 +250,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
                 .setMessage("Vui lòng bật định vị và thử lại")
                 .setPositiveButton("Thử Lại", (dialogInterface, i) -> getLocation())
                 .setNegativeButton("Bỏ Qua", (dialog, which) -> useSampleLocation())
+                .setCancelable(false)
                 .create();
         alertDialog.show();
     }
@@ -247,31 +258,36 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
     private void loadMapData(ArrayList<VaccinePlace> vaccinePlaces) {
         mMap.clear();
         for(int i = 0; i < vaccinePlaces.size();i++){
-            VaccinePlaces.add(vaccinePlaces.get(i));
+//            VaccinePlaces.add(vaccinePlaces.get(i));
             VaccinePlace place = vaccinePlaces.get(i);
-            if(!place.isRequired()){
-                Marker marker = mMap.addMarker(
-                        new MarkerOptions()
-                                .position(place.getLatLong())
-                                .title(place.name)
-                                .icon(BitmapDescriptorFactory.fromAsset("vaccine_green.png")));
-            }
 
-            if(place.isRequired()){
+            if (place != null) {
+                String iconName = place.isRequired() ? "vaccine_red.png" : "vaccine_green.png";
+                if (PLACE_TYPE_CLOTHES_SUPPORT.equals(place.placeType)) {
+                    iconName = "clothes.png";
+                }
+                if (PLACE_TYPE_FOOD_SUPPORT.equals(place.placeType)) {
+                    iconName = "food.png";
+                }
+
                 mMap.addMarker(
                         new MarkerOptions()
                                 .position(place.getLatLong())
                                 .title(place.name)
-                                .icon(BitmapDescriptorFactory.fromAsset("vaccine_red.png")));
+                                .icon(BitmapDescriptorFactory.fromAsset(iconName)));
             }
         }
 
         mMap.setOnMarkerClickListener(marker -> {
+            if (ADD_PLACE_TAG.equals(marker.getTag())) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                return false;
+            }
+
             String name = marker.getTitle();
             des_name.setText(name);
             if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
             }
             return false;
         });
@@ -331,6 +347,26 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
         DataCenter.getInstance().addVaccinePlaceListener(firebaseListener);
 
         mMap.setOnInfoWindowClickListener(this);
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style));
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+                Log.d(TAG, "onMarkerDragStart..." + marker.getPosition().latitude + "..." + marker.getPosition().longitude);
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                Log.d(TAG, "onMarkerDragEnd..." + marker.getPosition().latitude + "..." + marker.getPosition().longitude);
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+                addPlaceLatLong = marker.getPosition();
+            }
+
+            @Override
+            public void onMarkerDrag(Marker marker) {
+                Log.i(TAG, "onMarkerDrag...");
+            }
+        });
 //        setupMap();
     }
 
@@ -397,12 +433,16 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
         if (requestCode == CONNECTION_FAILURE_RESOLUTION_REQUEST && resultCode == RESULT_OK) {
             getLocation();
         }
-        if(requestCode == 100 && resultCode == RESULT_OK){
-            addNewMarker(data);
+        if(requestCode == ADD_PLACE_REQUEST && resultCode == RESULT_OK){
+//            addNewMarker(data);
+            addNewPlace(data.getParcelableExtra("place"));
         }
     }
 
-    private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 101;
+    private void addNewPlace(VaccinePlace place) {
+        Log.e(TAG, "place: " + place.toString());
+        DataCenter.getInstance().addPlace(place);
+    }
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
@@ -414,14 +454,12 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
 
     @Override
     public void onInfoWindowClick(@NonNull Marker marker) {
-        if(marker.getTitle().equals("Tạo địa điểm mới")){}
-        Intent i = new Intent(MainActivity.this, PlusLocationActivity.class);
-        i.putExtra("Lat", marker.getPosition().latitude);
-        i.putExtra("Long",marker.getPosition().longitude);
-        startActivityForResult(i, 100);
-
-
+        if (ADD_PLACE_TAG.equals(marker.getTag())) {
+            Intent i = new Intent(MainActivity.this, PlusLocationActivity.class);
+            LatLng newPlace = (addPlaceLatLong == null) ? marker.getPosition() : addPlaceLatLong;
+            i.putExtra("Lat", newPlace.latitude);
+            i.putExtra("Long", newPlace.longitude);
+            startActivityForResult(i, ADD_PLACE_REQUEST);
+        }
     }
-
-
 }

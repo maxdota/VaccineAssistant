@@ -1,5 +1,8 @@
 package vn.noname.vaccineassistant;
 
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_CLOTHES_SUPPORT;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_FOOD_SUPPORT;
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -20,6 +23,7 @@ import androidx.annotation.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import vn.noname.vaccineassistant.base.BaseActivity;
 import vn.noname.vaccineassistant.model.VaccinePlace;
@@ -28,6 +32,7 @@ public class PlusLocationActivity extends BaseActivity {
 
     String[] items = {"Cứu trợ","Cung cấp quần áo", "Cung cấp đồ ăn"};
     String item;
+    int itemIndex;
     AutoCompleteTextView autoCompleteTextView;
     AutoCompleteTextView date_picker;
     ArrayAdapter<String> adapterItems;
@@ -121,16 +126,43 @@ public class PlusLocationActivity extends BaseActivity {
                 place.address = addressLocation.getText().toString();
                 place.openingTime = openLocation.getText().toString();
                 place.closingTime = closeLocation.getText().toString();
-                place.fee = Long.parseLong(payLocation.getText().toString());
-                place.ageLimitAbove = Integer.parseInt(age_above.getText().toString());
-                place.ageLimitBelow = Integer.parseInt(age_below.getText().toString());
+
+                try {
+                    String feeString = payLocation.getText().toString();
+                    place.fee = feeString.isEmpty() ? 0 : Long.parseLong(feeString);
+
+                    String ageAboveString = age_above.getText().toString();
+                    place.ageLimitAbove = ageAboveString.isEmpty() ? 0 : Integer.parseInt(ageAboveString);
+
+                    String ageBelowString = age_below.getText().toString();
+                    place.ageLimitBelow = ageBelowString.isEmpty() ? 0 : Integer.parseInt(ageBelowString);
+                } catch (Exception ex) {
+                    Toast.makeText(PlusLocationActivity.this, "Vui lòng điền Tiền phí, Độ tuổi là dạng số (hoặc để trống)", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (place.ageLimitAbove > place.ageLimitBelow) {
+                    Toast.makeText(PlusLocationActivity.this, "Tuổi trên phải nhỏ hơn tuổi dưới", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 place.region = stfLocation.getText().toString();
-                place.id = item;
+                place.id = place.name.toLowerCase(Locale.ROOT) + System.currentTimeMillis();
+
+                // default placeType = "" means vaccine place
+                if (itemIndex == 1) {
+                    place.placeType = PLACE_TYPE_CLOTHES_SUPPORT;
+                }
+                if (itemIndex == 2) {
+                    place.placeType = PLACE_TYPE_FOOD_SUPPORT;
+                }
+
                 if( place.name == null || place.address == null|| place.openingTime == null|| place.closingTime == null
                         || place.region == null || place.region == null){
-                    Toast.makeText(PlusLocationActivity.this, "Cần điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PlusLocationActivity.this, "Cần điền đầy đủ thông tin", Toast.LENGTH_LONG).show();
                 }else {
                     Intent i = new Intent(PlusLocationActivity.this, MainActivity.class);
+                    i.putExtra("place", place);
                     i.putExtra("placelong", place.longitude);
                     i.putExtra("placelat", place.latitude);
                     i.putExtra("placeaddress", place.address);
@@ -148,7 +180,7 @@ public class PlusLocationActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 item = parent.getItemAtPosition(position).toString();
-
+                itemIndex = position;
             }
         });
 

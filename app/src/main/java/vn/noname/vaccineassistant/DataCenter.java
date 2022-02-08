@@ -3,6 +3,7 @@ package vn.noname.vaccineassistant;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +24,8 @@ public class DataCenter {
     private ArrayList<VaccinePlace> vaccinePlaces = new ArrayList<>();
     private final Object vaccinePlaceLock = new Object();
 
+    private DatabaseReference placeFirebaseRef;
+
     public static DataCenter getInstance() {
         if (sInstance == null) {
             sInstance = new DataCenter();
@@ -32,8 +35,8 @@ public class DataCenter {
 
     private DataCenter() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("vaccine_places");
-        myRef.addValueEventListener(new ValueEventListener() {
+        placeFirebaseRef = database.getReference("places");
+        placeFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 GenericTypeIndicator<ArrayList<VaccinePlace>> type =
@@ -55,6 +58,15 @@ public class DataCenter {
                 triggerErrorVaccinePlaceListeners("Failed to read from Firebase: " + error.getMessage(), 0);
             }
         });
+    }
+
+    public void addPlace(VaccinePlace place) {
+        synchronized (vaccinePlaceLock) {
+            vaccinePlaces.add(place);
+            placeFirebaseRef.setValue(vaccinePlaces, (error, ref) -> {
+                Log.d(TAG, "Add place completed, error: " + error);
+            });
+        }
     }
 
     public void triggerDataVaccinePlaceListeners(ArrayList<VaccinePlace> value) {
