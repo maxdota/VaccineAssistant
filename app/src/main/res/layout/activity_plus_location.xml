@@ -31,10 +31,38 @@
     <include
         layout="@layout/id_location"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="155dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="15dp" />
+
+    <RelativeLayout
+        android:id="@+id/viewLoading"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="#80000000">
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"
+            android:paddingHorizontal="30dp"
+            android:layout_marginTop="15dp"
+            android:textSize="22sp"
+            android:gravity="center_horizontal"
+            android:layout_below="@id/progress"
+            android:text="Đang tải dữ liệu lên máy chủ.\nVui lòng chờ tí..." />
+    </RelativeLayout>
 </RelativeLayout>

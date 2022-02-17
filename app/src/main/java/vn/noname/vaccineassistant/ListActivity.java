@@ -38,7 +38,7 @@ public class ListActivity extends BaseActivity {
 
                for(int i = 0; i < data.size();i++){
                     VaccinePlace place = data.get(i);
-                    if(place.vaccine.equals( getIntent().getStringExtra("Vaccine"))){
+                    if(getIntent().getStringExtra("Vaccine").equals(place.vaccine)){
                         if(MainActivity.userLatLong != null){
                             float[] result = new float[1];
                             Location.distanceBetween(MainActivity.userLatLong.latitude, MainActivity.userLatLong.longitude, place.latitude, place.longitude, result);

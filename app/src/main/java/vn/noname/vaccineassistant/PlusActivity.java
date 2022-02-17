@@ -92,6 +92,9 @@ public class PlusActivity extends BaseActivity {
                     intent.putExtra("Vaccine", item);
                     /*intent.putExtra("checkCount", 5);*/
                     startActivity(intent);
+                    
+                    // overridePendingTransition to remove animation between 2 activities
+                    overridePendingTransition(0, 0);
 
                 }
             }
