@@ -13,11 +13,11 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@id/bottom_nav"
         android:layout_marginBottom="10dp"
         android:orientation="vertical"
-        android:background="@drawable/botron"
+        android:background="@drawable/vertical_gradient_background"
         android:paddingHorizontal="@dimen/activity_horizontal_margin">
 
         <TextView

@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
@@ -84,7 +85,7 @@ public class PlusActivity extends BaseActivity {
             public void onClick(View view) {
 
                 //distanceList = checkDistance(vaccinePlaces);
-                if(item == null || date_picker.getText()  == null){
+                if(TextUtils.isEmpty(item)|| TextUtils.isEmpty(date_picker.getText())){
                     Toast.makeText(PlusActivity.this, "Cần điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 } else {
                     checkCount++;

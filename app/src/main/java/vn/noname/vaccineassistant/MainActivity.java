@@ -14,7 +14,10 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +47,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,6 +73,8 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
     private RelativeLayout layoutBottomDescription;
     private BottomSheetBehavior bottomSheetBehavior;
     private TextView des_name;
+    private ImageView image_add;
+
 
     private LatLng addPlaceLatLong;
 
@@ -106,7 +112,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
         layoutBottomDescription = findViewById(R.id.bottom_description);
         bottomSheetBehavior = BottomSheetBehavior.from(layoutBottomDescription);
         des_name = findViewById(R.id.des_name);
-
+        image_add = findViewById(R.id.image_add);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -269,23 +275,44 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
                 if (PLACE_TYPE_FOOD_SUPPORT.equals(place.placeType)) {
                     iconName = "food.png";
                 }
+                if(TextUtils.isEmpty(place.imageUrl)){
+                    mMap.addMarker(
+                            new MarkerOptions()
+                                    .position(place.getLatLong())
+                                    .title(place.name)
+                                    .icon(BitmapDescriptorFactory.fromAsset(iconName)));
+                }
+                if(!TextUtils.isEmpty(place.imageUrl)){
+                    mMap.addMarker(
+                            new MarkerOptions()
+                                    .position(place.getLatLong())
+                                    .title(place.name)
+                                    .icon(BitmapDescriptorFactory.fromAsset(iconName))).setTag(place.imageUrl);
+                }
 
-                mMap.addMarker(
-                        new MarkerOptions()
-                                .position(place.getLatLong())
-                                .title(place.name)
-                                .icon(BitmapDescriptorFactory.fromAsset(iconName)));
             }
         }
 
         mMap.setOnMarkerClickListener(marker -> {
+            if(marker.getTag()!= null){
+                String url = marker.getTag().toString();
+
+                Picasso.get()
+                        .load(url)
+                        .placeholder(R.drawable.progress_animation)
+                        .into(image_add);
+                image_add.setVisibility(View.VISIBLE);
+            }else {
+                image_add.setVisibility(View.INVISIBLE);
+            }
             if (ADD_PLACE_TAG.equals(marker.getTag())) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 return false;
             }
-
             String name = marker.getTitle();
             des_name.setText(name);
+
+
             if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
@@ -321,6 +348,17 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
                 String name = marker.getTitle();
+                if(marker.getTag()!= null){
+                    String url = marker.getTag().toString();
+
+                    Picasso.get()
+                            .load(url)
+                            .placeholder(R.drawable.progress_animation)
+                            .into(image_add);
+                    image_add.setVisibility(View.VISIBLE);
+                }else {
+                    image_add.setVisibility(View.INVISIBLE);
+                }
                 des_name.setText(name);
                 if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);

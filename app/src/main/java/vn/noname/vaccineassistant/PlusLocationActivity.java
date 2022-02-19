@@ -17,6 +17,7 @@ import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -199,8 +200,8 @@ public class PlusLocationActivity extends BaseActivity {
                     place.placeType = PLACE_TYPE_FOOD_SUPPORT;
                 }
 
-                if( place.name == null || place.address == null|| place.openingTime == null|| place.closingTime == null
-                        || place.region == null || place.region == null){
+                if( TextUtils.isEmpty(place.name) || TextUtils.isEmpty(place.address)|| TextUtils.isEmpty(place.openingTime)|| TextUtils.isEmpty(place.closingTime)
+                        || TextUtils.isEmpty(place.region)){
                     Toast.makeText(PlusLocationActivity.this, "Cần điền đầy đủ thông tin", Toast.LENGTH_LONG).show();
                 }else {
                     createNewPlace();
