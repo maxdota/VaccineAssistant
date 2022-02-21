@@ -12,7 +12,7 @@
         android:layout_alignParentBottom="true" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_nav"
         android:layout_marginBottom="10dp"
@@ -23,7 +23,7 @@
         <TextView
             android:id="@+id/list_name"
             android:layout_marginTop="40dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -32,13 +32,66 @@
             android:textColor="@color/white"
             android:textSize="30sp" />
 
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/all_list"
+                    android:background="@drawable/each_item"
+                    android:layout_width="110dp"
+                    android:layout_height="30dp"
+                    android:textSize="15dp"
+                    android:text="Tất cả"
+                    android:layout_margin="10dp"/>
+                <Button
+                    android:id="@+id/vaccine_list"
+                    android:background="@drawable/each_item"
+                    android:layout_width="110dp"
+                    android:layout_height="30dp"
+                    android:textSize="15dp"
+                    android:text="Vaccine"
+                    android:layout_margin="10dp"/>
+                <Button
+                    android:id="@+id/food_list"
+                    android:background="@drawable/each_item"
+                    android:layout_width="110dp"
+                    android:layout_height="30dp"
+                    android:textSize="15dp"
+                    android:text="Đồ ăn"
+                    android:layout_margin="10dp"/>
+                <Button
+                    android:id="@+id/clothes_list"
+                    android:background="@drawable/each_item"
+                    android:layout_width="110dp"
+                    android:layout_height="30dp"
+                    android:textSize="15dp"
+                    android:text="Quần áo"
+                    android:layout_margin="10dp"/>
+                <Button
+                    android:id="@+id/help_list"
+                    android:background="@drawable/each_item"
+                    android:layout_width="110dp"
+                    android:layout_height="30dp"
+                    android:textSize="15dp"
+                    android:text="Cứu trợ"
+                    android:layout_margin="10dp"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+
         <ListView
             android:id="@+id/list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:divider="#00000000"
-            android:dividerHeight="15dp"/>
+            android:dividerHeight="15dp"
+            android:scrollbars="none"/>
 
     </LinearLayout>
 </RelativeLayout>

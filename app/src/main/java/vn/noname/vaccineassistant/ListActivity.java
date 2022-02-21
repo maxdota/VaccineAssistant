@@ -3,7 +3,10 @@ package vn.noname.vaccineassistant;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,9 +26,11 @@ public class ListActivity extends BaseActivity {
     ListView listView;
     ArrayList<Place> placeList;
     private ArrayList<VaccinePlace> placeDst = new ArrayList<>();
+    private ArrayList<VaccinePlace> placeType = new ArrayList<>();
     private  ArrayList<VaccinePlace> vaccinePlaces = new ArrayList<>();
     ListAdapter listAdapter;
     private ArrayList<Float> distance=new ArrayList<>();
+    private Button all_list, vaccine_list, food_list, clothes_list, help_list;
 
     private FirebaseListener<ArrayList<VaccinePlace>> firebaseListener = new FirebaseListener<ArrayList<VaccinePlace>>() {
         @Override
@@ -33,9 +38,6 @@ public class ListActivity extends BaseActivity {
 
             listAdapter.clear();
             if( getIntent().getStringExtra("Vaccine") != null ){
-
-
-
                for(int i = 0; i < data.size();i++){
                     VaccinePlace place = data.get(i);
                     if(getIntent().getStringExtra("Vaccine").equals(place.vaccine)){
@@ -91,14 +93,48 @@ public class ListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         initBottomNav();
-
         addControls();
+        all_list = findViewById(R.id.all_list);
+        vaccine_list= findViewById(R.id.vaccine_list);
+        food_list = findViewById(R.id.food_list);
+        clothes_list = findViewById(R.id.clothes_list);
+        help_list = findViewById(R.id.help_list);
+        clothes_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(placeDst.size()>0){
+                    addControl("clothes_support");
+                }
+                Log.d("size of placedst", "hello" + placeDst.size());
+
+            }
+        }
+        );
+
+
 //        addEvent();
     }
 
     private void addControls() {
         listView = (ListView) findViewById(R.id.list_view);
         placeList = new ArrayList<>();
+        listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces);
+        listView.setAdapter(listAdapter);
+    }
+
+    private void addControl(String type) {
+        listView = (ListView) findViewById(R.id.list_view);
+        placeList = new ArrayList<>();
+        listAdapter.clear();
+        Log.d("thnafh công ", "thành công lần 1");
+        for(int i=0; i< placeDst.size(); i++){
+            Log.d("thứ tự ưu tiên", "hello" + i);
+            if(!TextUtils.isEmpty(placeDst.get(i).placeType)){
+            if(((placeDst.get(i)).placeType).equals(type)){
+                placeType.add(placeType.get(i));
+            }
+        }}
+        listAdapter.addAll(placeType);
         listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces);
         listView.setAdapter(listAdapter);
     }
@@ -163,5 +199,6 @@ public class ListActivity extends BaseActivity {
         }
         return placeDst;
     }
+
 
 }
