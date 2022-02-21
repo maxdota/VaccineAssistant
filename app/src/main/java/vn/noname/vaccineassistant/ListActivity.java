@@ -26,7 +26,7 @@ public class ListActivity extends BaseActivity {
     ListView listView;
     ArrayList<Place> placeList;
     private ArrayList<VaccinePlace> placeDst = new ArrayList<>();
-    private ArrayList<VaccinePlace> placeType = new ArrayList<>();
+    private ArrayList<VaccinePlace> Placetype = new ArrayList<>();
     private  ArrayList<VaccinePlace> vaccinePlaces = new ArrayList<>();
     ListAdapter listAdapter;
     private ArrayList<Float> distance=new ArrayList<>();
@@ -105,13 +105,41 @@ public class ListActivity extends BaseActivity {
                 if(placeDst.size()>0){
                     addControl("clothes_support");
                 }
-                Log.d("size of placedst", "hello" + placeDst.size());
 
             }
         }
         );
+        all_list.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                if(placeDst.size()>0){
+                                                    listAdapter.addAll(placeDst);
+                                                    addControls();
+                                                }
 
+                                            }
+                                        }
+        );
+        food_list.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                if(placeDst.size()>0){
+                                                    addFood("food_support");
+                                                }
 
+                                            }
+                                        }
+        );
+        help_list.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                if(placeDst.size()>0){
+                                                    addHelp("help_support");
+                                                }
+
+                                            }
+                                        }
+        );
 //        addEvent();
     }
 
@@ -126,15 +154,49 @@ public class ListActivity extends BaseActivity {
         listView = (ListView) findViewById(R.id.list_view);
         placeList = new ArrayList<>();
         listAdapter.clear();
-        Log.d("thnafh công ", "thành công lần 1");
+        Placetype.clear();
         for(int i=0; i< placeDst.size(); i++){
-            Log.d("thứ tự ưu tiên", "hello" + i);
             if(!TextUtils.isEmpty(placeDst.get(i).placeType)){
             if(((placeDst.get(i)).placeType).equals(type)){
-                placeType.add(placeType.get(i));
+                Placetype.add(placeDst.get(i));
             }
+
         }}
-        listAdapter.addAll(placeType);
+        listAdapter.addAll(Placetype);
+        listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces);
+        listView.setAdapter(listAdapter);
+    }
+
+    private void addFood(String type) {
+        listView = (ListView) findViewById(R.id.list_view);
+        placeList = new ArrayList<>();
+        listAdapter.clear();
+        Placetype.clear();
+        for(int i=0; i< placeDst.size(); i++){
+            if(!TextUtils.isEmpty(placeDst.get(i).placeType)){
+                if(((placeDst.get(i)).placeType).equals(type)){
+                    Placetype.add(placeDst.get(i));
+                }
+
+            }}
+        listAdapter.addAll(Placetype);
+        listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces);
+        listView.setAdapter(listAdapter);
+    }
+
+    private void addHelp(String type) {
+        listView = (ListView) findViewById(R.id.list_view);
+        placeList = new ArrayList<>();
+        listAdapter.clear();
+        Placetype.clear();
+        for(int i=0; i< placeDst.size(); i++){
+            if(!TextUtils.isEmpty(placeDst.get(i).placeType)){
+                if(((placeDst.get(i)).placeType).equals(type)){
+                    Placetype.add(placeDst.get(i));
+                }
+
+            }}
+        listAdapter.addAll(Placetype);
         listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces);
         listView.setAdapter(listAdapter);
     }
