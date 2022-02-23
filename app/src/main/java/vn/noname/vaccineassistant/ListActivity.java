@@ -103,7 +103,7 @@ public class ListActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if(placeDst.size()>0){
-                    addControl("clothes_support");
+                    addPlace("clothes_support");
                 }
 
             }
@@ -114,6 +114,7 @@ public class ListActivity extends BaseActivity {
                                             @Override
                                             public void onClick(View view) {
                                                 if(placeDst.size()>0){
+                                                    listAdapter.clear();
                                                     listAdapter.addAll(placeDst);
                                                     addControls();
                                                 }
@@ -125,7 +126,7 @@ public class ListActivity extends BaseActivity {
                                             @Override
                                             public void onClick(View view) {
                                                 if(placeDst.size()>0){
-                                                    addFood("food_support");
+                                                    addPlace("food_support");
                                                 }
 
                                             }
@@ -135,7 +136,7 @@ public class ListActivity extends BaseActivity {
                                             @Override
                                             public void onClick(View view) {
                                                 if(placeDst.size()>0){
-                                                    addHelp("help_support");
+                                                    addPlace("help_support");
                                                 }
 
                                             }
@@ -151,7 +152,8 @@ public class ListActivity extends BaseActivity {
         listView.setAdapter(listAdapter);
     }
 
-    private void addControl(String type) {
+
+    private void addPlace(String type) {
         listView = (ListView) findViewById(R.id.list_view);
         placeList = new ArrayList<>();
         listAdapter.clear();
@@ -168,39 +170,7 @@ public class ListActivity extends BaseActivity {
         listView.setAdapter(listAdapter);
     }
 
-    private void addFood(String type) {
-        listView = (ListView) findViewById(R.id.list_view);
-        placeList = new ArrayList<>();
-        listAdapter.clear();
-        Placetype.clear();
-        for(int i=0; i< placeDst.size(); i++){
-            if(!TextUtils.isEmpty(placeDst.get(i).placeType)){
-                if(((placeDst.get(i)).placeType).equals(type)){
-                    Placetype.add(placeDst.get(i));
-                }
 
-            }}
-        listAdapter.addAll(Placetype);
-        listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces);
-        listView.setAdapter(listAdapter);
-    }
-
-    private void addHelp(String type) {
-        listView = (ListView) findViewById(R.id.list_view);
-        placeList = new ArrayList<>();
-        listAdapter.clear();
-        Placetype.clear();
-        for(int i=0; i< placeDst.size(); i++){
-            if(!TextUtils.isEmpty(placeDst.get(i).placeType)){
-                if(((placeDst.get(i)).placeType).equals(type)){
-                    Placetype.add(placeDst.get(i));
-                }
-
-            }}
-        listAdapter.addAll(Placetype);
-        listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces);
-        listView.setAdapter(listAdapter);
-    }
     private void addEvent() {
         createData();
     }
