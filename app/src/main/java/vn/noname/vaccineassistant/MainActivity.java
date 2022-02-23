@@ -73,7 +73,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
     FusedLocationProviderClient fusedLocationProviderClient;
     private RelativeLayout layoutBottomDescription;
     private BottomSheetBehavior bottomSheetBehavior;
-    private TextView des_name;
+    private TextView des_name, des_add;
     private ImageView image_add;
 
 
@@ -113,6 +113,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
         layoutBottomDescription = findViewById(R.id.bottom_description);
         bottomSheetBehavior = BottomSheetBehavior.from(layoutBottomDescription);
         des_name = findViewById(R.id.des_name);
+        des_add = findViewById(R.id.des_add);
         image_add = findViewById(R.id.image_add);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -291,7 +292,8 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
                             new MarkerOptions()
                                     .position(place.getLatLong())
                                     .title(place.name)
-                                    .icon(BitmapDescriptorFactory.fromAsset(iconName))).setTag(place.imageUrl);
+                                    .icon(BitmapDescriptorFactory.fromAsset(iconName))).setTag(place.imageUrl + "=" + place.address
+                                    + "=" + place.vaccine + "=" + place.openingTime + "-" + place.closingTime + "=" + place.region);
                 }
 
             }
@@ -299,8 +301,9 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
 
         mMap.setOnMarkerClickListener(marker -> {
             if(marker.getTag()!= null){
+                String[] arrOfTag = ((marker.getTag()).toString()).split("=");
                 String url = marker.getTag().toString();
-
+                des_add.setText(arrOfTag[1]);
                 Picasso.get()
                         .load(url)
                         .placeholder(R.drawable.progress_animation)
@@ -315,6 +318,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
             }
             String name = marker.getTitle();
             des_name.setText(name);
+
 
             Log.d("Bottomsheet", "type" + bottomSheetBehavior.getState());
             if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
