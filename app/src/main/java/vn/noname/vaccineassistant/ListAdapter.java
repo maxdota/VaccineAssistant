@@ -1,6 +1,7 @@
 package vn.noname.vaccineassistant;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,16 +35,16 @@ public class ListAdapter extends ArrayAdapter<VaccinePlace> {
         TextView txtName = (TextView) row.findViewById(R.id.tname);
         ImageView btnAddress = (ImageView) row.findViewById(R.id.iaddress);
         TextView txtAddress = (TextView) row.findViewById(R.id.taddress);
-        ImageView btnTime = (ImageView) row.findViewById(R.id.itime);
+
         TextView txtStart = (TextView) row.findViewById(R.id.start);
 //        TextView txtClose = (TextView) row.findViewById(R.id.close);
-        ImageView btnVaccine = (ImageView) row.findViewById(R.id.ivaccine);
+
         TextView txtVaccine = (TextView) row.findViewById(R.id.tvaccine);
-        ImageView btnAge = (ImageView) row.findViewById(R.id.iage);
+
         TextView txtAge = (TextView) row.findViewById(R.id.tage);
         ImageView btnRegion = (ImageView) row.findViewById(R.id.iregion);
         TextView txtRegion = (TextView) row.findViewById(R.id.tregion);
-        ImageView btnFee = (ImageView) row.findViewById(R.id.ifee);
+
         TextView txtFee = (TextView) row.findViewById(R.id.tfee);
         /** Set data to row*/
         final VaccinePlace place = this.objects.get(position);
@@ -52,6 +53,18 @@ public class ListAdapter extends ArrayAdapter<VaccinePlace> {
         txtStart.setText(place.openingTime + "-" + place.closingTime);
 //        txtClose.setText(place.closingTime);
         txtVaccine.setText(place.vaccine);
+
+        if(TextUtils.isEmpty(place.vaccine)){
+            txtVaccine.setVisibility(View.GONE);
+        }
+        if(TextUtils.isEmpty(place.openingTime)){
+            txtStart.setVisibility(View.GONE);
+        }
+        if(TextUtils.isEmpty(place.region)){
+            btnRegion.setVisibility(View.GONE);
+            txtRegion.setVisibility(View.GONE);
+        }
+
         int ageAbove = place.ageLimitAbove;
         int ageBelow = place.ageLimitBelow;
         if (ageBelow == 0 && ageAbove == 0) {
