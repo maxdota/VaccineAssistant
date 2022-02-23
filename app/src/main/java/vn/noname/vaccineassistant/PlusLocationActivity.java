@@ -2,6 +2,7 @@ package vn.noname.vaccineassistant;
 
 import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_CLOTHES_SUPPORT;
 import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_FOOD_SUPPORT;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_SUPPORT;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -57,7 +58,7 @@ public class PlusLocationActivity extends BaseActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final String TAG = "PlusLocationActivity";
 
-    String[] items = {"Cứu trợ","Cung cấp quần áo", "Cung cấp đồ ăn"};
+    String[] items = {"Cứu trợ","Cung cấp quần áo", "Cung cấp đồ ăn", "Vaccine"};
     String item;
     int itemIndex;
     AutoCompleteTextView autoCompleteTextView;
@@ -193,6 +194,9 @@ public class PlusLocationActivity extends BaseActivity {
                 place.id = place.name.toLowerCase(Locale.ROOT) + System.currentTimeMillis();
 
                 // default placeType = "" means vaccine place
+                if (itemIndex == 0) {
+                    place.placeType = PLACE_TYPE_SUPPORT;
+                }
                 if (itemIndex == 1) {
                     place.placeType = PLACE_TYPE_CLOTHES_SUPPORT;
                 }

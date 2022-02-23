@@ -8,14 +8,17 @@
                 android:startColor="#A2E2ED"
                 android:type="linear" />
             <corners
-                android:radius="30dp"/>
+                android:topLeftRadius="30dp"
+                android:topRightRadius="30dp"
+                />
         </shape>
     </item>
-    <item android:top="3dp" android:left="3dp" android:right="3dp" android:bottom="3dp">
+    <item android:top="3dp" android:left="3dp" android:right="3dp" >
     <shape android:shape="rectangle"
         xmlns:android="http://schemas.android.com/apk/res/android">
         <corners
-            android:radius="30dp"/>
+            android:topLeftRadius="30dp"
+            android:topRightRadius="30dp"/>
         <solid android:color="@color/white"/>
     </shape>
 </item>

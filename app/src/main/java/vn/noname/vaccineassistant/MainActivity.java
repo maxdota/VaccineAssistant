@@ -2,6 +2,7 @@ package vn.noname.vaccineassistant;
 
 import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_CLOTHES_SUPPORT;
 import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_FOOD_SUPPORT;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_SUPPORT;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -272,6 +273,9 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
                 if (PLACE_TYPE_CLOTHES_SUPPORT.equals(place.placeType)) {
                     iconName = "clothes.png";
                 }
+                if (PLACE_TYPE_SUPPORT.equals(place.placeType)) {
+                    iconName = "help.png";
+                }
                 if (PLACE_TYPE_FOOD_SUPPORT.equals(place.placeType)) {
                     iconName = "food.png";
                 }
@@ -312,9 +316,9 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
             String name = marker.getTitle();
             des_name.setText(name);
 
-
+            Log.d("Bottomsheet", "type" + bottomSheetBehavior.getState());
             if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);
             }
             return false;
         });
