@@ -2,7 +2,8 @@ package vn.noname.vaccineassistant;
 
 import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_CLOTHES_SUPPORT;
 import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_FOOD_SUPPORT;
-import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_SUPPORT;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_HELP_SUPPORT;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_VACCINE;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -193,15 +194,17 @@ public class PlusLocationActivity extends BaseActivity {
                 place.region = stfLocation.getText().toString();
                 place.id = place.name.toLowerCase(Locale.ROOT) + System.currentTimeMillis();
 
-                // default placeType = "" means vaccine place
                 if (itemIndex == 0) {
-                    place.placeType = PLACE_TYPE_SUPPORT;
+                    place.placeType = PLACE_TYPE_HELP_SUPPORT;
                 }
                 if (itemIndex == 1) {
                     place.placeType = PLACE_TYPE_CLOTHES_SUPPORT;
                 }
                 if (itemIndex == 2) {
                     place.placeType = PLACE_TYPE_FOOD_SUPPORT;
+                }
+                if (itemIndex == 3) {
+                    place.placeType = PLACE_TYPE_VACCINE;
                 }
 
                 if( TextUtils.isEmpty(place.name) || TextUtils.isEmpty(place.address)|| TextUtils.isEmpty(place.openingTime)|| TextUtils.isEmpty(place.closingTime)

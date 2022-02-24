@@ -8,9 +8,10 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.PropertyName;
 
 public class VaccinePlace implements Parcelable {
+    public static final String PLACE_TYPE_VACCINE = "vaccine";
     public static final String PLACE_TYPE_CLOTHES_SUPPORT = "clothes_support";
     public static final String PLACE_TYPE_FOOD_SUPPORT = "food_support";
-    public static final String PLACE_TYPE_SUPPORT = "support";
+    public static final String PLACE_TYPE_HELP_SUPPORT = "help_support";
 
     @PropertyName("id")
     public String id;

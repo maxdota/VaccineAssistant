@@ -1,5 +1,10 @@
 package vn.noname.vaccineassistant;
 
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_CLOTHES_SUPPORT;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_FOOD_SUPPORT;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_HELP_SUPPORT;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_VACCINE;
+
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -24,7 +29,6 @@ public class ListActivity extends BaseActivity {
         return LIST_SCREEN;
     }
     ListView listView;
-    ArrayList<Place> placeList;
     private ArrayList<VaccinePlace> placeDst = new ArrayList<>();
     private ArrayList<VaccinePlace> Placetype = new ArrayList<>();
     private  ArrayList<VaccinePlace> vaccinePlaces = new ArrayList<>();
@@ -93,19 +97,21 @@ public class ListActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         initBottomNav();
-        addControls();
+        listView = findViewById(R.id.list_view);
         all_list = findViewById(R.id.all_list);
         vaccine_list= findViewById(R.id.vaccine_list);
         food_list = findViewById(R.id.food_list);
         clothes_list = findViewById(R.id.clothes_list);
         help_list = findViewById(R.id.help_list);
+
+        addControls();
         clothes_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(placeDst.size()>0){
-                    addPlace("clothes_support");
+                    addPlace(PLACE_TYPE_CLOTHES_SUPPORT);
                 }
-
+                updateFilterUi(view);
             }
         }
         );
@@ -118,17 +124,27 @@ public class ListActivity extends BaseActivity {
                                                     listAdapter.addAll(placeDst);
                                                     addControls();
                                                 }
-
+                                                updateFilterUi(view);
                                             }
                                         }
+        );
+        vaccine_list.setOnClickListener(new View.OnClickListener() {
+                                         @Override
+                                         public void onClick(View view) {
+                                             if(placeDst.size()>0){
+                                                 addPlace(PLACE_TYPE_VACCINE);
+                                             }
+                                             updateFilterUi(view);
+                                         }
+                                     }
         );
         food_list.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
                                                 if(placeDst.size()>0){
-                                                    addPlace("food_support");
+                                                    addPlace(PLACE_TYPE_FOOD_SUPPORT);
                                                 }
-
+                                                updateFilterUi(view);
                                             }
                                         }
         );
@@ -136,26 +152,38 @@ public class ListActivity extends BaseActivity {
                                             @Override
                                             public void onClick(View view) {
                                                 if(placeDst.size()>0){
-                                                    addPlace("help_support");
+                                                    addPlace(PLACE_TYPE_HELP_SUPPORT);
                                                 }
-
+                                                updateFilterUi(view);
                                             }
                                         }
         );
-//        addEvent();
+    }
+
+    private void updateFilterUi(View view) {
+        resetFilterUiToUnselected();
+        setFilterUiToSelected(view);
+    }
+
+    private void setFilterUiToSelected(View view) {
+        view.setBackgroundResource(R.drawable.selected_each_item);
+    }
+
+    private void resetFilterUiToUnselected() {
+        all_list.setBackgroundResource(R.drawable.each_item);
+        vaccine_list.setBackgroundResource(R.drawable.each_item);
+        food_list.setBackgroundResource(R.drawable.each_item);
+        clothes_list.setBackgroundResource(R.drawable.each_item);
+        help_list.setBackgroundResource(R.drawable.each_item);
     }
 
     private void addControls() {
-        listView = (ListView) findViewById(R.id.list_view);
-        placeList = new ArrayList<>();
         listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces);
         listView.setAdapter(listAdapter);
     }
 
 
     private void addPlace(String type) {
-        listView = (ListView) findViewById(R.id.list_view);
-        placeList = new ArrayList<>();
         listAdapter.clear();
         Placetype.clear();
         for(int i=0; i< placeDst.size(); i++){
@@ -170,11 +198,6 @@ public class ListActivity extends BaseActivity {
         listView.setAdapter(listAdapter);
     }
 
-
-    private void addEvent() {
-        createData();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -185,34 +208,6 @@ public class ListActivity extends BaseActivity {
     protected void onPause() {
         DataCenter.getInstance().removeVaccinePlaceListener(firebaseListener);
         super.onPause();
-    }
-
-    private void createData() {
-        Place place = new Place("Bệnh viện Bạch Mai", "Địa chỉ: 78 Đường Giải Phóng, Phương Đình,  Đống Đa, Hà Nội", "Mở cửa: 7:00", "Đóng cửa: 17:00", "Loại vaccine: Pfizer",
-                "Độ tuổi: >13", "Khu vực: Không giới hạn", "Phí: Miễn Phí");
-        placeList.add(place);
-        place = new Place("Bệnh viện Bạch Mai", "Địa chỉ: 78 Đường Giải Phóng, Phương Đình,  Đống Đa, Hà Nội", "Mở cửa: 7:00", "Đóng cửa: 17:00", "Loại vaccine: Pfizer",
-                "Độ tuổi: >13", "Khu vực: Không giới hạn", "Phí: Miễn Phí");
-        placeList.add(place);
-        place = new Place("Bệnh viện Bạch Mai", "Địa chỉ: 78 Đường Giải Phóng, Phương Đình,  Đống Đa, Hà Nội", "Mở cửa: 7:00", "Đóng cửa: 17:00", "Loại vaccine: Pfizer",
-                "Độ tuổi: >13", "Khu vực: Không giới hạn", "Phí: Miễn Phí");
-        placeList.add(place);
-        place = new Place("Bệnh viện Bạch Mai", "Địa chỉ: 78 Đường Giải Phóng, Phương Đình,  Đống Đa, Hà Nội", "Mở cửa: 7:00", "Đóng cửa: 17:00", "Loại vaccine: Pfizer",
-                "Độ tuổi: >13", "Khu vực: Không giới hạn", "Phí: Miễn Phí");
-        placeList.add(place);
-        place = new Place("Bệnh viện Bạch Mai", "Địa chỉ: 78 Đường Giải Phóng, Phương Đình,  Đống Đa, Hà Nội", "Mở cửa: 7:00", "Đóng cửa: 17:00", "Loại vaccine: Pfizer",
-                "Độ tuổi: >13", "Khu vực: Không giới hạn", "Phí: Miễn Phí");
-        placeList.add(place);
-        place = new Place("Bệnh viện Bạch Mai", "Địa chỉ: 78 Đường Giải Phóng, Phương Đình,  Đống Đa, Hà Nội", "Mở cửa: 7:00", "Đóng cửa: 17:00", "Loại vaccine: Pfizer",
-                "Độ tuổi: >13", "Khu vực: Không giới hạn", "Phí: Miễn Phí");
-        placeList.add(place);
-        place = new Place("Bệnh viện Bạch Mai", "Địa chỉ: 78 Đường Giải Phóng, Phương Đình,  Đống Đa, Hà Nội", "Mở cửa: 7:00", "Đóng cửa: 17:00", "Loại vaccine: Pfizer",
-                "Độ tuổi: >13", "Khu vực: Không giới hạn", "Phí: Miễn Phí");
-        placeList.add(place);
-        place = new Place("Bệnh viện Bạch Mai", "Địa chỉ: 78 Đường Giải Phóng, Phương Đình,  Đống Đa, Hà Nội", "Mở cửa: 7:00", "Đóng cửa: 17:00", "Loại vaccine: Pfizer",
-                "Độ tuổi: >13", "Khu vực: Không giới hạn", "Phí: Miễn Phí");
-        placeList.add(place);
-        listAdapter.notifyDataSetChanged();
     }
 
     private ArrayList<VaccinePlace> placeDistance( ArrayList<Float> distance){

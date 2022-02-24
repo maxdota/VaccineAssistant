@@ -2,7 +2,7 @@ package vn.noname.vaccineassistant;
 
 import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_CLOTHES_SUPPORT;
 import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_FOOD_SUPPORT;
-import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_SUPPORT;
+import static vn.noname.vaccineassistant.model.VaccinePlace.PLACE_TYPE_HELP_SUPPORT;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -274,7 +274,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
                 if (PLACE_TYPE_CLOTHES_SUPPORT.equals(place.placeType)) {
                     iconName = "clothes.png";
                 }
-                if (PLACE_TYPE_SUPPORT.equals(place.placeType)) {
+                if (PLACE_TYPE_HELP_SUPPORT.equals(place.placeType)) {
                     iconName = "help.png";
                 }
                 if (PLACE_TYPE_FOOD_SUPPORT.equals(place.placeType)) {
@@ -300,7 +300,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback,
         }
 
         mMap.setOnMarkerClickListener(marker -> {
-            if(marker.getTag()!= null){
+            if(marker.getTag()!= null && marker.getTag() != ADD_PLACE_TAG){
                 String[] arrOfTag = ((marker.getTag()).toString()).split("=");
                 String url = marker.getTag().toString();
                 des_add.setText(arrOfTag[1]);
