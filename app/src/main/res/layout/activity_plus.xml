@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_nav"
-        android:background="@drawable/botron"
+        android:background="@drawable/vertical_gradient_background"
         android:paddingHorizontal="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_top_margin">
 

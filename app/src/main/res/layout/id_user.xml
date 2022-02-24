@@ -53,6 +53,6 @@
         android:textColor="@color/white"
         android:textSize="20dp"
         android:layout_margin="10dp"
-        android:background="@drawable/vertical_gradient_background"/>
+        android:background="@drawable/botron"/>
 
 </LinearLayout>
