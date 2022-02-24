@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -28,19 +30,76 @@ public class ListActivity extends BaseActivity {
     public int currentScreen() {
         return LIST_SCREEN;
     }
-    ListView listView;
+//    ListView listView;
+    RecyclerView listView;
+    PlaceListAdapter placeListAdapter;
     private ArrayList<VaccinePlace> placeDst = new ArrayList<>();
     private ArrayList<VaccinePlace> Placetype = new ArrayList<>();
     private  ArrayList<VaccinePlace> vaccinePlaces = new ArrayList<>();
     ListAdapter listAdapter;
     private ArrayList<Float> distance=new ArrayList<>();
     private Button all_list, vaccine_list, food_list, clothes_list, help_list;
+    private String deviceId = DataCenter.getInstance().getDeviceId();
+
+    private String currentFilter = "";
+    private final Object placeListLock = new Object();
+
+    private ListAdapter.OnClickAction onClickAction = new ListAdapter.OnClickAction() {
+        @Override
+        public void onLike(VaccinePlace place, boolean isSelected) {
+            boolean isContainLikeUser = place.likeSelectedUsers != null && place.likeSelectedUsers.contains(deviceId);
+            if (isSelected) {
+                if (!isContainLikeUser) {
+                    place.likeSelectedUsers = place.likeSelectedUsers + "|" + deviceId;
+                    place.likeCount += 1;
+                }
+            } else {
+                if (isContainLikeUser) {
+                    place.likeSelectedUsers = place.likeSelectedUsers.replace(deviceId, "");
+                    place.likeCount -= 1;
+                }
+            }
+            DataCenter.getInstance().updatePlace(place);
+        }
+
+        @Override
+        public void onUnlike(VaccinePlace place, boolean isSelected) {
+            boolean isContainUnlikeUser = place.unlikeSelectedUsers != null && place.unlikeSelectedUsers.contains(deviceId);
+            if (isSelected) {
+                if (!isContainUnlikeUser) {
+                    place.unlikeSelectedUsers = place.unlikeSelectedUsers + "|" + deviceId;
+                    place.unlikeCount += 1;
+                }
+            } else {
+                if (isContainUnlikeUser) {
+                    place.unlikeSelectedUsers = place.unlikeSelectedUsers.replace(deviceId, "");
+                    place.unlikeCount -= 1;
+                }
+            }
+            DataCenter.getInstance().updatePlace(place);
+        }
+    };
+
+    private void updateList() {
+        if (currentFilter.equals("")) {
+            placeListAdapter.updateData(placeDst);
+        } else {
+            addPlace(currentFilter);
+        }
+        updateFilterUi();
+    }
 
     private FirebaseListener<ArrayList<VaccinePlace>> firebaseListener = new FirebaseListener<ArrayList<VaccinePlace>>() {
         @Override
         public void onDataUpdated(ArrayList<VaccinePlace> data) {
+            for (int i = 0; i < data.size(); i++) {
+                VaccinePlace place = data.get(i);
+                Log.e("ngoc", "index: " + i + ", current place: " + place.id);
+            }
 
-            listAdapter.clear();
+//            listAdapter.clear();
+            placeDst.clear();
+            distance.clear();
             if( getIntent().getStringExtra("Vaccine") != null ){
                for(int i = 0; i < data.size();i++){
                     VaccinePlace place = data.get(i);
@@ -60,8 +119,10 @@ public class ListActivity extends BaseActivity {
                         }
                     }
                 }
-                placeDst = placeDistance( distance);
-                listAdapter.addAll(placeDst);
+
+               placeDst = placeDistance(distance);
+               updateList();
+//                listAdapter.addAll(placeDst);
             }
             else {
                 for(int i = 0; i < data.size();i++){
@@ -82,7 +143,8 @@ public class ListActivity extends BaseActivity {
 
                 }
                 placeDst = placeDistance( distance);
-                listAdapter.addAll(placeDst);
+                updateList();
+//                listAdapter.addAll(placeDst);
             }
         }
 
@@ -104,14 +166,19 @@ public class ListActivity extends BaseActivity {
         clothes_list = findViewById(R.id.clothes_list);
         help_list = findViewById(R.id.help_list);
 
-        addControls();
+        listView.setLayoutManager(new LinearLayoutManager(this));
+        placeListAdapter = new PlaceListAdapter(this, onClickAction);
+        listView.setAdapter(placeListAdapter);
+
+//        addControls();
         clothes_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(placeDst.size()>0){
-                    addPlace(PLACE_TYPE_CLOTHES_SUPPORT);
+                    currentFilter = PLACE_TYPE_CLOTHES_SUPPORT;
+                    updateList();
+//                    addPlace(PLACE_TYPE_CLOTHES_SUPPORT);
                 }
-                updateFilterUi(view);
             }
         }
         );
@@ -120,11 +187,14 @@ public class ListActivity extends BaseActivity {
                                             @Override
                                             public void onClick(View view) {
                                                 if(placeDst.size()>0){
-                                                    listAdapter.clear();
-                                                    listAdapter.addAll(placeDst);
-                                                    addControls();
+
+                                                    currentFilter = "";
+                                                    updateList();
+
+//                                                    listAdapter.clear();
+//                                                    listAdapter.addAll(placeDst);
+//                                                    addControls();
                                                 }
-                                                updateFilterUi(view);
                                             }
                                         }
         );
@@ -132,9 +202,12 @@ public class ListActivity extends BaseActivity {
                                          @Override
                                          public void onClick(View view) {
                                              if(placeDst.size()>0){
-                                                 addPlace(PLACE_TYPE_VACCINE);
+
+                                                 currentFilter = PLACE_TYPE_VACCINE;
+                                                 updateList();
+
+//                                                 addPlace(PLACE_TYPE_VACCINE);
                                              }
-                                             updateFilterUi(view);
                                          }
                                      }
         );
@@ -142,9 +215,11 @@ public class ListActivity extends BaseActivity {
                                             @Override
                                             public void onClick(View view) {
                                                 if(placeDst.size()>0){
-                                                    addPlace(PLACE_TYPE_FOOD_SUPPORT);
+
+                                                    currentFilter = PLACE_TYPE_FOOD_SUPPORT;
+                                                    updateList();
+//                                                    addPlace(PLACE_TYPE_FOOD_SUPPORT);
                                                 }
-                                                updateFilterUi(view);
                                             }
                                         }
         );
@@ -152,16 +227,34 @@ public class ListActivity extends BaseActivity {
                                             @Override
                                             public void onClick(View view) {
                                                 if(placeDst.size()>0){
-                                                    addPlace(PLACE_TYPE_HELP_SUPPORT);
+
+                                                    currentFilter = PLACE_TYPE_HELP_SUPPORT;
+                                                    updateList();
+
+//                                                    addPlace(PLACE_TYPE_HELP_SUPPORT);
                                                 }
-                                                updateFilterUi(view);
                                             }
                                         }
         );
     }
 
-    private void updateFilterUi(View view) {
+    private void updateFilterUi() {
         resetFilterUiToUnselected();
+        View view = all_list;
+        switch (currentFilter) {
+            case PLACE_TYPE_CLOTHES_SUPPORT:
+                view = clothes_list;
+                break;
+            case PLACE_TYPE_FOOD_SUPPORT:
+                view = food_list;
+                break;
+            case PLACE_TYPE_HELP_SUPPORT:
+                view = help_list;
+                break;
+            case PLACE_TYPE_VACCINE:
+                view = vaccine_list;
+                break;
+        }
         setFilterUiToSelected(view);
     }
 
@@ -178,13 +271,13 @@ public class ListActivity extends BaseActivity {
     }
 
     private void addControls() {
-        listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces);
-        listView.setAdapter(listAdapter);
+        listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces, onClickAction);
+//        listView.setAdapter(listAdapter);
     }
 
 
     private void addPlace(String type) {
-        listAdapter.clear();
+//        listAdapter.clear();
         Placetype.clear();
         for(int i=0; i< placeDst.size(); i++){
             if(!TextUtils.isEmpty(placeDst.get(i).placeType)){
@@ -193,9 +286,10 @@ public class ListActivity extends BaseActivity {
             }
 
         }}
-        listAdapter.addAll(Placetype);
-        listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces);
-        listView.setAdapter(listAdapter);
+        placeListAdapter.updateData(Placetype);
+//        listAdapter.addAll(Placetype);
+//        listAdapter = new ListAdapter(ListActivity.this, R.layout.list_item, vaccinePlaces, onClickAction);
+//        listView.setAdapter(listAdapter);
     }
 
     @Override

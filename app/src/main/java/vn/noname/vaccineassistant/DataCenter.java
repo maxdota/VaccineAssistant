@@ -1,5 +1,6 @@
 package vn.noname.vaccineassistant;
 
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,8 @@ public class DataCenter {
     private ArrayList<VaccinePlace> vaccinePlaces = new ArrayList<>();
     private final Object vaccinePlaceLock = new Object();
 
+    private String deviceId;
+
     private DatabaseReference placeFirebaseRef;
 
     public static DataCenter getInstance() {
@@ -34,6 +37,9 @@ public class DataCenter {
     }
 
     private DataCenter() {
+        deviceId = Settings.Secure.getString(MainApp.sApp.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         placeFirebaseRef = database.getReference("places");
         placeFirebaseRef.addValueEventListener(new ValueEventListener() {
@@ -58,6 +64,10 @@ public class DataCenter {
                 triggerErrorVaccinePlaceListeners("Failed to read from Firebase: " + error.getMessage(), 0);
             }
         });
+    }
+
+    public String getDeviceId() {
+        return deviceId;
     }
 
     public void addPlace(VaccinePlace place) {
@@ -103,4 +113,25 @@ public class DataCenter {
     }
 
     private static final String TAG = "DataCenter";
+
+    public void updatePlace(VaccinePlace place) {
+        synchronized (vaccinePlaceLock) {
+            String placeId = place.id;
+            int index = 0;
+            for (int i = 0; i < vaccinePlaces.size(); i++) {
+                VaccinePlace p = vaccinePlaces.get(i);
+                if (p.id.equals(placeId)) {
+                    index = i;
+                    place = p;
+                    break;
+                }
+            }
+
+            Log.e("ngoc", "updating " + placeId + " at position: " + index);
+
+            placeFirebaseRef.child(index + "").setValue(place, (error, ref) -> {
+                Log.d(TAG, "Update place completed, error: " + error);
+            });
+        }
+    }
 }

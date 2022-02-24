@@ -43,6 +43,14 @@ public class VaccinePlace implements Parcelable {
     public double latitude;
     @PropertyName("longitude")
     public double longitude;
+    @PropertyName("like_selected_users")
+    public String likeSelectedUsers;
+    @PropertyName("unlike_selected_users")
+    public String unlikeSelectedUsers;
+    @PropertyName("like_count")
+    public int likeCount;
+    @PropertyName("unlike_count")
+    public int unlikeCount;
 
     public VaccinePlace() {
     }
@@ -63,6 +71,10 @@ public class VaccinePlace implements Parcelable {
         vaccine = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
+        likeSelectedUsers = in.readString();
+        unlikeSelectedUsers = in.readString();
+        likeCount = in.readInt();
+        unlikeCount = in.readInt();
     }
 
     @Override
@@ -82,6 +94,10 @@ public class VaccinePlace implements Parcelable {
         dest.writeString(vaccine);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
+        dest.writeString(likeSelectedUsers);
+        dest.writeString(unlikeSelectedUsers);
+        dest.writeInt(likeCount);
+        dest.writeInt(unlikeCount);
     }
 
     @Override

@@ -3,4 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_top_margin">35dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="like_icon_size">35dp</dimen>
 </resources>
