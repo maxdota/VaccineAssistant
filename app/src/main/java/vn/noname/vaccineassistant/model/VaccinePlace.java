@@ -17,6 +17,8 @@ public class VaccinePlace implements Parcelable {
     public String id;
     @PropertyName("name")
     public String name;
+    @PropertyName("phone")
+    public String phone;
     @PropertyName("image_url")
     public String imageUrl;
     @PropertyName("address")
@@ -58,6 +60,7 @@ public class VaccinePlace implements Parcelable {
     protected VaccinePlace(Parcel in) {
         id = in.readString();
         name = in.readString();
+        phone = in.readString();
         imageUrl = in.readString();
         address = in.readString();
         placeType = in.readString();
@@ -81,6 +84,7 @@ public class VaccinePlace implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(name);
+        dest.writeString(phone);
         dest.writeString(imageUrl);
         dest.writeString(address);
         dest.writeString(placeType);
