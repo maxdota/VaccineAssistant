@@ -15,7 +15,7 @@
         android:layout_marginLeft="10dp"
         android:layout_width="140dp"
         android:layout_height="70dp"
-        android:src="@drawable/ic_map_active"
+        android:visibility="invisible"
         android:elevation="16dp" />
 
     <LinearLayout
